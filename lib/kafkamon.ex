@@ -12,6 +12,10 @@ defmodule Kafkamon do
       supervisor(Kafkamon.Endpoint, []),
       # Start your own worker by calling: Kafkamon.Worker.start_link(arg1, arg2, arg3)
       # worker(Kafkamon.Worker, [arg1, arg2, arg3]),
+      supervisor(Reader.EventQueueSupervisor, []),
+      worker(Reader.TopicSubscribers, []),
+      worker(Reader.Topics, []),
+      worker(Kafkamon.TopicsSubscriber, [])
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
