@@ -6,22 +6,12 @@ defmodule Kafkamon do
   def start(_type, _args) do
     import Supervisor.Spec
 
-    # Define workers and child supervisors to be supervised
-    children = [
-      # Start the endpoint when the application starts
+    [
+      supervisor(Reader.Supervisor, []),
       supervisor(Kafkamon.Endpoint, []),
-      # Start your own worker by calling: Kafkamon.Worker.start_link(arg1, arg2, arg3)
-      # worker(Kafkamon.Worker, [arg1, arg2, arg3]),
-      supervisor(Reader.EventQueueSupervisor, []),
-      worker(Reader.TopicSubscribers, []),
-      worker(Reader.Topics, []),
-      worker(Kafkamon.TopicsSubscriber, [])
+      worker(Kafkamon.TopicsSubscriber, []),
     ]
-
-    # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
-    # for other strategies and supported options
-    opts = [strategy: :one_for_one, name: Kafkamon.Supervisor]
-    Supervisor.start_link(children, opts)
+    |> Supervisor.start_link(strategy: :one_for_one, name: Kafkamon.Supervisor)
   end
 
   # Tell Phoenix to update the endpoint configuration

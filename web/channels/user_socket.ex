@@ -2,7 +2,8 @@ defmodule Kafkamon.UserSocket do
   use Phoenix.Socket
 
   ## Channels
-  channel "room", Kafkamon.RoomChannel
+  channel "topics", Kafkamon.TopicsChannel
+  channel "topic:*", Kafkamon.TopicChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket

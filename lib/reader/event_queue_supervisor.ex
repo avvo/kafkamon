@@ -2,25 +2,28 @@ defmodule Reader.EventQueueSupervisor do
   require Logger
   use Supervisor
 
-  def init([]) do
-    children = [
-      worker(Reader.EventQueueConsumer, [], restart: :transient)
-    ]
+  def start_link, do: Supervisor.start_link(__MODULE__, :ok, name: __MODULE__)
 
-    supervise(children, strategy: :simple_one_for_one)
+  def init(:ok) do
+    [
+      worker(Reader.EventQueueConsumer, [], restart: :temporary)
+    ] |> supervise(strategy: :simple_one_for_one)
   end
 
-  def start_link do
-    Supervisor.start_link(__MODULE__, [], name: __MODULE__)
-  end
-
-  def start_consumer(topic) do
-    case Supervisor.start_child(__MODULE__, [topic]) do
+  def start_child(topic) do
+    :ok = case Supervisor.start_child(__MODULE__, [topic]) do
       {:ok, _pid} ->
         :ok
+      {:error, {:already_started, _pid}} ->
+        Logger.info("Reader.EventQueueSupervisor already started child for #{topic}")
+        :ok
       error ->
-        Logger.error("Got error trying to start consumer for #{topic}: #{inspect error}")
+        Logger.error("Reader.EventQueueSupervisor error #{topic}: #{inspect error}")
         :error
     end
+  end
+
+  def terminate_child(topic) do
+    Reader.EventQueueConsumer.terminate(__MODULE__, topic)
   end
 end

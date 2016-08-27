@@ -32,6 +32,7 @@ defmodule Kafkamon.Mixfile do
         :avrolixr,
         :erlavro,
         :kafka_ex,
+        :gproc,
       ]
     ]
   end
@@ -52,6 +53,7 @@ defmodule Kafkamon.Mixfile do
       {:avrolixr, "~> 0.1.0"},
       {:erlavro, github: "avvo/erlavro"},
       {:kafka_ex, "~> 0.5.0"},
+      {:gproc, "~> 0.5.0"},
 
       {:phoenix, "~> 1.2.0"},
       {:phoenix_pubsub, "~> 1.0"},
