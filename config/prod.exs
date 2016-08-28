@@ -16,8 +16,15 @@ config :kafkamon, Kafkamon.Endpoint,
   url: [host: "example.com", port: 80],
   cache_static_manifest: "priv/static/manifest.json"
 
-# Do not print debug messages in production
-config :logger, level: :info
+config :logger,
+  backends: [
+    :console,
+    {LoggerFileBackend, :debug_log}
+  ]
+
+config :logger, :debug_log,
+  path: "/var/log/kafkamon/debug.log",
+  level: :debug
 
 # ## SSL Support
 #

@@ -17,6 +17,7 @@ ENV PORT=80 \
     MIX_ENV=prod \
     APP_HOME=/srv/kafkamon/current
 
+RUN mkdir -p /var/log/kafkamon
 RUN mkdir -p $APP_HOME/lib
 WORKDIR $APP_HOME
 

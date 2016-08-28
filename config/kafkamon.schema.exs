@@ -52,16 +52,6 @@ See the moduledoc for `Conform.Schema.Validator` for more details and examples.
   extends: [],
   import: [],
   mappings: [
-    "kafka_ex.brokers": [
-      commented: false,
-      datatype: [
-        list: {:string, :integer}
-      ],
-      default: "[]",
-      doc: "Provide documentation for kafka_ex.brokers here.",
-      hidden: false,
-      to: "kafka_ex.brokers"
-    ],
     "kafka_ex.consumer_group": [
       commented: false,
       datatype: :binary,
@@ -139,6 +129,35 @@ See the moduledoc for `Conform.Schema.Validator` for more details and examples.
       doc: "Provide documentation for logger.level here.",
       hidden: false,
       to: "logger.level"
+    ],
+    "logger.backends": [
+      commented: false,
+      datatype: [
+        list: :atom
+      ],
+      default: [
+        :console,
+        :debug_log,
+      ],
+      doc: "Provide documentation for logger.backends here.",
+      hidden: false,
+      to: "logger.backends"
+    ],
+    "logger.debug_log.path": [
+      commented: false,
+      datatype: :binary,
+      default: "/var/log/kafkamon/debug.log",
+      doc: "Provide documentation for logger.debug_log.path here.",
+      hidden: false,
+      to: "logger.debug_log.path"
+    ],
+    "logger.debug_log.level": [
+      commented: false,
+      datatype: :atom,
+      default: :debug,
+      doc: "Provide documentation for logger.debug_log.level here.",
+      hidden: false,
+      to: "logger.debug_log.level"
     ],
     "kafkamon.Elixir.Kafka.impl": [
       commented: false,
@@ -232,6 +251,9 @@ See the moduledoc for `Conform.Schema.Validator` for more details and examples.
         |> String.split(",")
         |> Enum.map(fn pair -> String.split(pair, ":") |> List.to_tuple end)
         |> Enum.map(fn {host, port} -> {host, String.to_integer(port)} end)
+    end,
+    "logger.backends": fn _conf ->
+      [:console, {LoggerFileBackend, :debug_log}]
     end
   ],
   validators: []

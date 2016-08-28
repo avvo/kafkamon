@@ -19,8 +19,6 @@ defmodule Kafkamon.Mixfile do
     [
       mod: {Kafkamon, []},
       applications: [
-        :gproc,
-
         :phoenix,
         :phoenix_pubsub,
         :phoenix_html,
@@ -30,6 +28,8 @@ defmodule Kafkamon.Mixfile do
 
         :conform,
         :conform_exrm,
+        :gproc,
+        :logger_file_backend,
 
         :avrolixr,
         :erlavro,
@@ -55,6 +55,7 @@ defmodule Kafkamon.Mixfile do
       {:erlavro, github: "avvo/erlavro"},
       {:kafka_ex, "~> 0.5.0"},
       {:gproc, "~> 0.5.0"},
+      {:logger_file_backend, "~> 0.0"},
 
       {:phoenix, "~> 1.2.0"},
       {:phoenix_pubsub, "~> 1.0"},

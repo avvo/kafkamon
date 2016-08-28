@@ -14,6 +14,7 @@
   "gproc": {:hex, :gproc, "0.5.0", "2df2d886f8f8a7b81a4b04aa17972b5965bbc5bf0100ea6d8e8ac6a0e7389afe", [:rebar], []},
   "jsonx": {:git, "https://github.com/iskra/jsonx.git", "9c95948c6835827ed61a9506ae4a9aba61acf335", [branch: "master"]},
   "kafka_ex": {:hex, :kafka_ex, "0.5.0", "d7c6d5a2b26a0b17e60e01d478230a92ca104633341dec11203eeb53bce0d449", [:mix], []},
+  "logger_file_backend": {:hex, :logger_file_backend, "0.0.8", "1cdf1c492d6f64ee5d76d423cd76e2282ae3a7800468cb8b305bdfd1e775c07b", [:mix], []},
   "mime": {:hex, :mime, "1.0.1", "05c393850524767d13a53627df71beeebb016205eb43bfbd92d14d24ec7a1b51", [:mix], []},
   "mochijson3": {:git, "https://github.com/tophitpoker/mochijson3.git", "1a1c913ac80bb45d3de5fbd74d21e96c45e9e844", [branch: "master"]},
   "neotoma": {:hex, :neotoma, "1.7.3", "d8bd5404b73273989946e4f4f6d529e5c2088f5fa1ca790b4dbe81f4be408e61", [:rebar], []},
