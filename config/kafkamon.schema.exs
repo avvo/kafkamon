@@ -137,27 +137,27 @@ See the moduledoc for `Conform.Schema.Validator` for more details and examples.
       ],
       default: [
         :console,
-        :debug_log,
+        :error_log,
       ],
       doc: "Provide documentation for logger.backends here.",
       hidden: false,
       to: "logger.backends"
     ],
-    "logger.debug_log.path": [
+    "logger.error_log.path": [
       commented: false,
       datatype: :binary,
-      default: "/var/log/kafkamon/debug.log",
-      doc: "Provide documentation for logger.debug_log.path here.",
+      default: "/var/log/kafkamon/error.log",
+      doc: "Provide documentation for logger.error_log.path here.",
       hidden: false,
-      to: "logger.debug_log.path"
+      to: "logger.error_log.path"
     ],
-    "logger.debug_log.level": [
+    "logger.error_log.level": [
       commented: false,
       datatype: :atom,
-      default: :debug,
-      doc: "Provide documentation for logger.debug_log.level here.",
+      default: :error,
+      doc: "Provide documentation for logger.error_log.level here.",
       hidden: false,
-      to: "logger.debug_log.level"
+      to: "logger.error_log.level"
     ],
     "kafkamon.Elixir.Kafka.impl": [
       commented: false,
@@ -261,7 +261,7 @@ See the moduledoc for `Conform.Schema.Validator` for more details and examples.
         |> Enum.map(fn {host, port} -> {host, String.to_integer(port)} end)
     end,
     "logger.backends": fn _conf ->
-      [:console, {LoggerFileBackend, :debug_log}]
+      [:console, {LoggerFileBackend, :error_log}]
     end,
     "kafkamon.Elixir.Kafkamon.Endpoint.url.host": fn _conf ->
       System.get_env("KAFKAMON_HOST") || "kafkamon.local"
