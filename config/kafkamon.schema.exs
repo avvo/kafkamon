@@ -265,7 +265,7 @@ See the moduledoc for `Conform.Schema.Validator` for more details and examples.
     end,
     "kafkamon.Elixir.Kafkamon.Endpoint.url.host": fn _conf ->
       System.get_env("KAFKAMON_HOST") || "kafkamon.local"
-    end
+    end,
     "kafkamon.Elixir.Kafkamon.Endpoint.url.port": fn _conf ->
       String.to_integer(System.get_env("KAFKAMON_PORT") || "80")
     end
