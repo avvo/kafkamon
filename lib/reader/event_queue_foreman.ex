@@ -3,31 +3,35 @@ defmodule Reader.EventQueueForeman do
 
   def start_link, do: GenServer.start_link(__MODULE__, [], name: __MODULE__)
 
-  def init(state) do
+  def init([] = known_topics) do
     Process.send_after(self(), :topic_subscribe, 10)
-    {:ok, state}
+    {:ok, known_topics}
   end
 
-  def handle_cast({:topics, old_topics, new_topics}, state) do
-    new_topics
-    |> Enum.each(fn topic ->
-      Reader.EventQueueSupervisor.start_child(topic)
-    end)
+  def handle_cast({:topics, old_topics, new_topics}, known_topics) do
+    all_topics = ((known_topics |> Enum.reject(&(&1 in old_topics))) ++ new_topics) |> Enum.uniq
 
-    old_topics
-    |> Enum.each(fn topic ->
-      Reader.EventQueueSupervisor.terminate_child(topic)
-    end)
+    new_topics |> Enum.reject(&(&1 in known_topics)) |> Enum.each(&topic_added/1)
 
-    {:noreply, state}
+    old_topics |> Enum.filter(&(&1 in known_topics)) |> Enum.each(&topic_removed/1)
+
+    {:noreply, all_topics}
   end
 
-  def handle_info({:topics, _, _} = msg, state) do
-    handle_cast(msg, state)
+  def handle_info({:topics, _, _} = msg, known_topics) do
+    handle_cast(msg, known_topics)
   end
 
-  def handle_info(:topic_subscribe, state) do
+  def handle_info(:topic_subscribe, known_topics) do
     Reader.TopicBroadcast.subscribe()
-    {:noreply, state}
+    {:noreply, known_topics}
+  end
+
+  defp topic_added(topic) do
+    Reader.EventQueueSupervisor.start_child(topic)
+  end
+
+  def topic_removed(topic) do
+    Reader.EventQueueSupervisor.terminate_child(topic)
   end
 end

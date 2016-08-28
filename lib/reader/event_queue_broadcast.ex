@@ -7,6 +7,6 @@ defmodule Reader.EventQueueBroadcast do
     topic |> via() |> GenServer.cast({:message, topic, message})
   end
 
-  defp key(topic), do: {:p, :l, {__MODULE__, topic}}
+  defp key(topic), do: {:p, :l, String.to_atom("event_queue_broadcast_#{topic}")}
   defp via(topic), do: {:via, :gproc, key(topic)}
 end

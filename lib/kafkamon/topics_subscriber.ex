@@ -3,13 +3,13 @@ defmodule Kafkamon.TopicsSubscriber do
 
   def start_link, do: GenServer.start_link(__MODULE__, [], name: __MODULE__)
 
-  def init(known_topics) do
+  def init([] = known_topics) do
     Reader.TopicBroadcast.subscribe()
     {:ok, known_topics}
   end
 
   def handle_cast({:topics, old_topics, new_topics}, known_topics) do
-    all_topics = (known_topics |> Enum.reject(&(&1 in old_topics))) ++ new_topics
+    all_topics = ((known_topics |> Enum.reject(&(&1 in old_topics))) ++ new_topics) |> Enum.uniq
 
     Kafkamon.Endpoint.broadcast("topics", "change", %{
       "added" => new_topics,
@@ -17,17 +17,9 @@ defmodule Kafkamon.TopicsSubscriber do
       "all" => all_topics,
     })
 
-    new_topics
-    |> Enum.each(fn topic ->
-      Kafkamon.Endpoint.broadcast("topic:#{topic}", "subscribe", %{})
-      Reader.EventQueueBroadcast.subscribe(topic)
-    end)
+    new_topics |> Enum.reject(&(&1 in known_topics)) |> Enum.each(&topic_added/1)
 
-    old_topics
-    |> Enum.each(fn topic ->
-      Reader.EventQueueBroadcast.unsubscribe(topic)
-      Kafkamon.Endpoint.broadcast("topic:#{topic}", "unsubscribe", %{})
-    end)
+    old_topics |> Enum.filter(&(&1 in known_topics)) |> Enum.each(&topic_removed/1)
 
     {:noreply, all_topics}
   end
@@ -38,5 +30,15 @@ defmodule Kafkamon.TopicsSubscriber do
       %{"message" => message})
 
     {:noreply, state}
+  end
+
+  defp topic_added(topic) do
+    Kafkamon.Endpoint.broadcast("topic:#{topic}", "subscribe", %{})
+    Reader.EventQueueBroadcast.subscribe(topic)
+  end
+
+  def topic_removed(topic) do
+    Reader.EventQueueBroadcast.unsubscribe(topic)
+    Kafkamon.Endpoint.broadcast("topic:#{topic}", "unsubscribe", %{})
   end
 end

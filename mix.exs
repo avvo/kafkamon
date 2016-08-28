@@ -19,6 +19,8 @@ defmodule Kafkamon.Mixfile do
     [
       mod: {Kafkamon, []},
       applications: [
+        :gproc,
+
         :phoenix,
         :phoenix_pubsub,
         :phoenix_html,
@@ -32,7 +34,6 @@ defmodule Kafkamon.Mixfile do
         :avrolixr,
         :erlavro,
         :kafka_ex,
-        :gproc,
       ]
     ]
   end
