@@ -236,6 +236,14 @@ See the moduledoc for `Conform.Schema.Validator` for more details and examples.
       hidden: false,
       to: "kafkamon.Elixir.Kafkamon.Endpoint.cache_static_manifest"
     ],
+    "kafkamon.Elixir.Kafkamon.Endpoint.server": [
+      commented: false,
+      datatype: :boolean,
+      default: true,
+      doc: "Provide documentation for kafkamon.Elixir.Kafkamon.Endpoint.server here.",
+      hidden: false,
+      to: "kafkamon.Elixir.Kafkamon.Endpoint.server"
+    ],
     "kafkamon.Elixir.Kafkamon.Endpoint.secret_key_base": [
       commented: false,
       datatype: :binary,

@@ -14,7 +14,8 @@ use Mix.Config
 config :kafkamon, Kafkamon.Endpoint,
   http: [port: {:system, "PORT"}],
   url: [host: "example.com", port: 80],
-  cache_static_manifest: "priv/static/manifest.json"
+  cache_static_manifest: "priv/static/manifest.json",
+  server: true
 
 config :logger,
   backends: [
