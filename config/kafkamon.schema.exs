@@ -262,6 +262,9 @@ See the moduledoc for `Conform.Schema.Validator` for more details and examples.
     end,
     "logger.backends": fn _conf ->
       [:console, {LoggerFileBackend, :debug_log}]
+    end,
+    "kafkamon.Elixir.Kafkamon.Endpoint.url.host": fn _conf ->
+      System.get_env("KAFKAMON_HOST") || "kafkamon.local"
     end
   ],
   validators: []
