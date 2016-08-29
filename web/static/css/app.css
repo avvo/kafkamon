@@ -1,12 +1,12 @@
 /* This file is for your main application css. */
 .event, .message {
-  display: inline-block;
   font-family: monospace;
 }
 
 .messageBlock {
   background-color: #EAEAEA;
   font-size: 9pt;
+  margin: 3px;
 }
 
 .timestamp, .app_id, .name, .message { padding: 3px; }
@@ -14,7 +14,11 @@
 .timestamp { color: #00447B; }
 .app_id { color: #00B7AF; }
 .name { color: #52A304; }
-.message { color: #333333; }
+.message {
+  display: inline;
+  color: #333333;
+  overflow-wrap: break-word;
+}
 
 h1 { padding: 0; margin: 0; }
 html, body {
