@@ -92,9 +92,13 @@ let Main = React.createClass({
   },
   render() {
     return(
-      <div>
-        <TopicList topics={this.state.topics} onTopicLinkClick={this.handleTopicLinkClick}/>
-        <Messages topic={this.state.activeTopic} messages={this.state.messages}/>
+      <div className="page-container">
+        <div className="page-left">
+          <TopicList topics={this.state.topics} onTopicLinkClick={this.handleTopicLinkClick}/>
+        </div>
+        <div className="page-content">
+          <Messages topic={this.state.activeTopic} messages={this.state.messages}/>
+        </div>
       </div>
     )
   }
@@ -105,7 +109,7 @@ let TopicList = React.createClass({
     return(
       <div>
         {this.props.topics.map(topic => {
-          return <span key={topic}><TopicLink onClick={this.props.onTopicLinkClick} name={topic} /> | </span>
+          return <div key={topic}><TopicLink onClick={this.props.onTopicLinkClick} name={topic} /></div>
         })}
       </div>
     )

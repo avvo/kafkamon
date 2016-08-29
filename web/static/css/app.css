@@ -15,3 +15,29 @@
 .app_id { color: #00B7AF; }
 .name { color: #52A304; }
 .message { color: #333333; }
+
+h1 { padding: 0; margin: 0; }
+html, body {
+  height: 100%;
+}
+header {
+  height: 50px;
+  background-color: #F3F3F3;
+}
+.page-container, .page-content {
+  height: calc(100% - 50px);
+  width: 100%;
+}
+.page-left {
+  height: 100%;
+  float: left;
+  background-color: #F3F3F3;
+  padding: 5px;
+}
+.page-content {
+  position: absolute;
+  padding-left: 160px;
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: scroll;
+}
