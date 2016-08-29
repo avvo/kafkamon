@@ -25,6 +25,7 @@ defmodule Kafkamon.Mixfile do
         :cowboy,
         :logger,
         :gettext,
+        :phoenix_slime,
 
         :conform,
         :conform_exrm,
@@ -63,6 +64,7 @@ defmodule Kafkamon.Mixfile do
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
+      {:phoenix_slime, "~> 0.7.0"},
     ]
   end
 end

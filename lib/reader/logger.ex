@@ -18,13 +18,13 @@ defmodule Reader.Logger do
     {:noreply, state}
   end
 
-  def handle_cast({:message, topic, {:error, error}}, state) do
-    Logger.error "[#{topic}] Error parsing message, got #{inspect error}"
+  def handle_cast({:message, topic, {:error, error}, offset}, state) do
+    Logger.error "[#{topic}##{offset}] Error parsing message, got #{inspect error}"
     {:noreply, state}
   end
 
-  def handle_cast({:message, topic, message}, state) do
-    Logger.info "[#{topic}] #{inspect message}"
+  def handle_cast({:message, topic, message, offset}, state) do
+    Logger.info "[#{topic}##{offset}] #{inspect message}"
     {:noreply, state}
   end
 

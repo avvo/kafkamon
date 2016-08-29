@@ -1,1 +1,17 @@
 /* This file is for your main application css. */
+.event, .message {
+  display: inline-block;
+  font-family: monospace;
+}
+
+.messageBlock {
+  background-color: #EAEAEA;
+  font-size: 9pt;
+}
+
+.timestamp, .app_id, .name, .message { padding: 3px; }
+
+.timestamp { color: #00447B; }
+.app_id { color: #00B7AF; }
+.name { color: #52A304; }
+.message { color: #333333; }

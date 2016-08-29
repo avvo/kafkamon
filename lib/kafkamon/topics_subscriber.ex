@@ -24,10 +24,13 @@ defmodule Kafkamon.TopicsSubscriber do
     {:noreply, all_topics}
   end
 
-  def handle_cast({:message, topic, message}, state) do
+  def handle_cast({:message, topic, message, offset}, state) do
     Kafkamon.Endpoint.broadcast("topic:#{topic}",
       "new:message",
-      %{"message" => message})
+      %{
+        "message" => message,
+        "key" => "#{topic}:#{offset}"
+      })
 
     {:noreply, state}
   end

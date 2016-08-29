@@ -30,11 +30,9 @@ defmodule Reader.EventQueueConsumer do
         try do
           message.value
           |> Avrolixr.Codec.decode!
-          |> (fn data ->
-            Reader.EventQueueBroadcast.notify(topic, data)
-          end).()
+          |> Reader.EventQueueBroadcast.notify(topic, message.offset)
         rescue
-          error -> Reader.EventQueueBroadcast.notify(topic, {:error, error})
+          error -> Reader.EventQueueBroadcast.notify({:error, error}, topic, message.offset)
         end
       end
     end)
