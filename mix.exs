@@ -52,8 +52,8 @@ defmodule Kafkamon.Mixfile do
       {:conform, "~> 2.1", override: true},
       {:conform_exrm, "~> 1.0"},
 
-      {:avrolixr, "~> 0.1.0"},
-      {:erlavro, github: "avvo/erlavro"},
+      {:avrolixr, github: "avvo/avrolixr", branch: "one-store-to-rule-them-all"},
+      {:erlavro, github: "avvo/erlavro", override: true},
       {:kafka_ex, "~> 0.5.0"},
       {:gproc, "~> 0.5.0"},
       {:logger_file_backend, "~> 0.0"},

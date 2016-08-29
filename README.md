@@ -17,3 +17,5 @@ Ready to run in production? Please [check our deployment guides](http://www.phoe
   * Docs: https://hexdocs.pm/phoenix
   * Mailing list: http://groups.google.com/group/phoenix-talk
   * Source: https://github.com/phoenixframework/phoenix
+
+iex --name console@127.0.0.1 --cookie kafkamon --remsh kafkamon@127.0.0.1
