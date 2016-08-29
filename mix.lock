@@ -1,4 +1,4 @@
-%{"avrolixr": {:hex, :avrolixr, "0.1.1", "9d2086e46baef65a5d16db2b40e45830ce1132014d878f16232a580c964b29d0", [:mix], [{:poison, "~> 2.0", [hex: :poison, optional: false]}]},
+%{"avrolixr": {:hex, :avrolixr, "0.1.2", "4179a3a9e6af7527c010ff6ae92d3787212f87b46a47d271d2a47bb3d539399e", [:mix], [{:poison, "~> 2.0", [hex: :poison, optional: false]}]},
   "bbmustache": {:hex, :bbmustache, "1.0.4", "7ba94f971c5afd7b6617918a4bb74705e36cab36eb84b19b6a1b7ee06427aa38", [:rebar], []},
   "cf": {:hex, :cf, "0.2.1", "69d0b1349fd4d7d4dc55b7f407d29d7a840bf9a1ef5af529f1ebe0ce153fc2ab", [:rebar3], []},
   "conform": {:hex, :conform, "2.1.1", "8e31fdf84e7bc4bf09aaab1de9f231d611fb39f58463c67f4dcf1803c78a4222", [:mix], [{:neotoma, "~> 1.7.3", [hex: :neotoma, optional: false]}]},
