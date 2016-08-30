@@ -18,24 +18,32 @@ defmodule Kafkamon.Mixfile do
   def application do
     [
       mod: {Kafkamon, []},
-      applications: [
-        :phoenix,
-        :phoenix_pubsub,
-        :phoenix_html,
-        :cowboy,
-        :logger,
-        :gettext,
-        :phoenix_slime,
+      applications: applications(Mix.env)
+    ]
+  end
 
-        :conform,
-        :conform_exrm,
-        :gproc,
-        :logger_file_backend,
+  def applications(:test) do
+    applications(:all) |> Enum.reject(&(&1 == :kafka_ex))
+  end
 
-        :avrolixr,
-        :erlavro,
-        :kafka_ex,
-      ]
+  def applications(_) do
+    [
+      :phoenix,
+      :phoenix_pubsub,
+      :phoenix_html,
+      :cowboy,
+      :logger,
+      :gettext,
+      :phoenix_slime,
+
+      :conform,
+      :conform_exrm,
+      :gproc,
+      :logger_file_backend,
+
+      :avrolixr,
+      :erlavro,
+      :kafka_ex,
     ]
   end
 

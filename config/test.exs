@@ -8,3 +8,5 @@ config :kafkamon, Kafkamon.Endpoint,
 
 # Print only warnings and errors during test
 config :logger, level: :warn
+
+config :kafkamon, Kafka, impl: Kafka.Mock
