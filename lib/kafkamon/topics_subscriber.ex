@@ -29,7 +29,8 @@ defmodule Kafkamon.TopicsSubscriber do
       "new:message",
       %{
         "message" => message,
-        "key" => "#{topic}:#{offset}"
+        "key" => "#{topic}:#{offset}",
+        "offset" => offset,
       })
 
     {:noreply, state}

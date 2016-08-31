@@ -61,15 +61,16 @@ let Main = React.createClass({
       topics: [],
       activeTopic: "",
       messages: [],
-      topics_channel: socket.channel("topics", {}),
-      activeChannel: null
+      topicsChannel: socket.channel("topics", {}),
+      activeChannel: null,
+      currentOffset: null
     }
   },
   componentDidMount() {
-    this.state.topics_channel.join()
+    this.state.topicsChannel.join()
       .receive("ok", resp => { console.log("Joined 'topics' successfully", resp) })
       .receive("error", resp => { console.log("Unable to join 'topics'", resp) })
-    this.state.topics_channel.on("change", payload => {
+    this.state.topicsChannel.on("change", payload => {
       this.setState({topics: payload.all})
     })
   },
@@ -78,7 +79,10 @@ let Main = React.createClass({
       .receive("ok", resp => { console.log(`Joined '${channel.topic}' successfully`, resp) })
       .receive("error", resp => { console.log(`Unable to join '${channel.topic}'`, resp) })
     channel.on("new:message", message => {
-      this.setState({messages: this.state.messages.concat([message])})
+      this.setState({
+        messages: this.state.messages.concat([message]),
+        currentOffset: message.offset
+      })
     })
   },
   handleTopicLinkClick(topic) {
@@ -97,7 +101,7 @@ let Main = React.createClass({
           <TopicList topics={this.state.topics} onTopicLinkClick={this.handleTopicLinkClick}/>
         </div>
         <div className="page-content">
-          <Messages topic={this.state.activeTopic} messages={this.state.messages}/>
+          <Messages topic={this.state.activeTopic} messages={this.state.messages} currentOffset={this.state.currentOffset}/>
         </div>
       </div>
     )
@@ -131,7 +135,7 @@ let Messages = React.createClass({
   render() {
     return(
       <div>
-        <div>Welcome to the '{this.props.topic}' topic</div>
+        <div>Welcome to the '{this.props.topic}' topic, the current offset is {this.props.currentOffset}</div>
         <MessageList messages={this.props.messages}/>
       </div>
     )
