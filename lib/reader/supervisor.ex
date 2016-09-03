@@ -9,6 +9,6 @@ defmodule Reader.Supervisor do
       worker(Reader.EventQueueForeman, []),
       worker(Reader.Logger, []),
       worker(Reader.Topics, []),
-    ] |> supervise(strategy: :one_for_all)
+    ] |> supervise(strategy: :rest_for_one)
   end
 end
