@@ -6,7 +6,7 @@ defmodule Reader.EventQueueSupervisor do
 
   def init(:ok) do
     [
-      worker(Reader.EventQueueConsumer, [], restart: :temporary)
+      worker(Reader.EventQueueConsumer, [], restart: :transient)
     ] |> supervise(strategy: :simple_one_for_one)
   end
 
