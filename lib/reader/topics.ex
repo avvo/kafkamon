@@ -53,12 +53,8 @@ defmodule Reader.Topics do
     Process.send_after(self(), :fetch_topics_later, delay)
   end
 
-  defp kafka do
-    Application.fetch_env!(:kafkamon, Kafka) |> Keyword.fetch!(:impl)
-  end
-
   defp topics() do
-    kafka().metadata.topic_metadatas
+    Kafka.metadata.topic_metadatas
     |> Enum.map(&(&1.topic))
     |> Enum.reject(&(String.starts_with?(&1, "_")))
     |> Enum.sort

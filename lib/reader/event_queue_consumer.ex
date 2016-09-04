@@ -11,7 +11,7 @@ defmodule Reader.EventQueueConsumer do
   end
 
   def init(topic) do
-    :ok = case kafka().create_worker(worker_name(topic)) do
+    :ok = case Kafka.create_worker(worker_name(topic)) do
       {:ok, _pid} -> :ok
       {:error, {:already_started, _pid}} ->
         Logger.error "Already started kafka_worker for #{topic}"
@@ -26,7 +26,7 @@ defmodule Reader.EventQueueConsumer do
 
   def handle_cast(:begin_streaming, topic) do
     Task.async(fn ->
-      for message <- kafka().stream(topic, 0, offset: latest_offset(topic), worker_name: worker_name(topic)) do
+      for message <- Kafka.stream(topic, 0, offset: latest_offset(topic), worker_name: worker_name(topic)) do
         try do
           message.value
           |> Avrolixr.Codec.decode!
@@ -40,16 +40,16 @@ defmodule Reader.EventQueueConsumer do
   end
 
   defp latest_offset(topic) do
-    case kafka().latest_offset(topic, 0) do
-      [%{partition_offsets: [%{offset: [offset]}]}] -> offset
-      wat -> IO.inspect(wat); 0
+    case Kafka.latest_offset(topic, 0) do
+      [%{partition_offsets: [%{offset: [offset]}]}] ->
+        offset
+      error ->
+        Logger.warn "Error retrieving offset for '#{topic}': #{inspect error}"
+        0
     end
   end
 
   defp worker_name(topic), do: :"worker_#{topic}"
   defp server_name(topic), do: {:via, :gproc, {:n, :l, {:topic_reader, topic}}}
 
-  defp kafka do
-    Application.fetch_env!(:kafkamon, Kafka) |> Keyword.fetch!(:impl)
-  end
 end
