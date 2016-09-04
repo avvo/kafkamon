@@ -1,5 +1,8 @@
 use Mix.Config
 
+config :kafkamon,
+  auto_topic_fetching: false
+
 # We don't run a server during test. If one is required,
 # you can enable the server option below.
 config :kafkamon, Kafkamon.Endpoint,

@@ -1,30 +1,19 @@
-defmodule KafkaMockStore do
+defmodule Kafka.Mock do
+  @behaviour Kafka
+
   def start_link, do: Agent.start_link(fn -> %{} end, name: __MODULE__)
 
-  def topics do
-    Agent.get(__MODULE__, fn state ->
-      state |> Map.get(:topics, [])
-    end)
-  end
-
-  def set_topics(new_topics) do
-    Agent.update(__MODULE__, fn state ->
+  def set_topics(requesting_pid, new_topics) do
+    update(requesting_pid, fn state ->
       state |> Map.put(:topics, new_topics)
     end)
   end
 
-end
-
-defimpl Kafka, for: Mock do
-  def start_link do
-    KafkaMockStore.start_link
-  end
-
   def metadata(_opts \\ []) do
-    start_link()
+    topics = get(:topics, [])
+
     %{
-      topic_metadatas: KafkaMockStore.topics
-        |> Enum.map(&(%{topic: &1}))
+      topic_metadatas: topics |> Enum.map(& %{topic: &1})
     }
   end
 
@@ -48,4 +37,16 @@ defimpl Kafka, for: Mock do
     ]
   end
 
+  defp get(key, default) do
+    pid = self
+    Agent.get(__MODULE__, fn state ->
+      state |> Map.get(pid, %{}) |> Map.get(key, default)
+    end)
+  end
+
+  defp update(pid, func) do
+    Agent.update(__MODULE__, fn state ->
+      state |> Map.update(pid, func.(%{}), func)
+    end)
+  end
 end

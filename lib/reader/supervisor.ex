@@ -8,7 +8,10 @@ defmodule Reader.Supervisor do
       supervisor(Reader.EventQueueSupervisor, []),
       worker(Reader.EventQueueForeman, []),
       worker(Reader.Logger, []),
-      worker(Reader.Topics, []),
+      worker(Reader.Topics, [[
+        auto_fetch: Application.fetch_env!(:kafkamon, :auto_topic_fetching),
+        name: Reader.Topics,
+      ]]),
     ] |> supervise(strategy: :rest_for_one)
   end
 end

@@ -5,6 +5,9 @@
 # is restricted to this project.
 use Mix.Config
 
+config :kafkamon,
+  auto_topic_fetching: true
+
 # Configures the endpoint
 config :kafkamon, Kafkamon.Endpoint,
   url: [host: "localhost"],

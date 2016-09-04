@@ -3,23 +3,28 @@ defmodule Reader.Topics do
 
   @refresh_time_in_ms 5 * 60 * 1000
 
-  def start_link, do: GenServer.start_link(__MODULE__, [], name: __MODULE__)
-
-  def init(state) do
-    fetch_topics_later(0)
-    {:ok, state}
+  def start_link(opts \\ []) do
+    auto_fetch = Keyword.get(opts, :auto_fetch, false)
+    GenServer.start_link(__MODULE__, auto_fetch, Keyword.take(opts, [:name]))
   end
 
-  def new_subscriber() do
-    GenServer.cast(__MODULE__, {:new_subscriber, self()})
+  def init(auto_fetch) do
+    if auto_fetch do
+      fetch_topics_later(0)
+    end
+    {:ok, []}
   end
 
-  def fetch_topics() do
-    GenServer.cast(__MODULE__, :fetch_topics)
+  def new_subscriber(name \\ __MODULE__) do
+    GenServer.cast(name, {:new_subscriber, self()})
   end
 
-  def current_topics() do
-    GenServer.call(__MODULE__, :current_topics)
+  def fetch_topics(name \\ __MODULE__) do
+    GenServer.cast(name, :fetch_topics)
+  end
+
+  def current_topics(name \\ __MODULE__) do
+    GenServer.call(name, :current_topics)
   end
 
   def handle_call(:current_topics, _from, topics) do
