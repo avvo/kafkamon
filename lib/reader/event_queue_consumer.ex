@@ -2,12 +2,8 @@ defmodule Reader.EventQueueConsumer do
   require Logger
   use GenServer
 
-  def start_link(topic) do
-    GenServer.start_link(__MODULE__, topic, name: server_name(topic))
-  end
-
-  def terminate(parent, topic) do
-    Supervisor.terminate_child(parent, server_name(topic))
+  def start_link(topic, opts \\ []) do
+    GenServer.start_link(__MODULE__, topic, Keyword.take(opts, [:name]))
   end
 
   def init(topic) do
@@ -20,7 +16,7 @@ defmodule Reader.EventQueueConsumer do
         Logger.error "Could not start kafka worker for #{topic}: #{inspect error}"
         :error
     end
-    GenServer.cast(server_name(topic), :begin_streaming)
+    GenServer.cast(self, :begin_streaming)
     {:ok, topic}
   end
 
@@ -50,6 +46,5 @@ defmodule Reader.EventQueueConsumer do
   end
 
   defp worker_name(topic), do: :"worker_#{topic}"
-  defp server_name(topic), do: {:via, :gproc, {:n, :l, {:topic_reader, topic}}}
 
 end

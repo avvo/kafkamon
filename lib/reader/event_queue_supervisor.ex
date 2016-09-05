@@ -2,7 +2,9 @@ defmodule Reader.EventQueueSupervisor do
   require Logger
   use Supervisor
 
-  def start_link, do: Supervisor.start_link(__MODULE__, :ok, name: __MODULE__)
+  def start_link(opts \\ []) do
+    Supervisor.start_link(__MODULE__, :ok, Keyword.take(opts, [:name]))
+  end
 
   def init(:ok) do
     [
@@ -10,8 +12,8 @@ defmodule Reader.EventQueueSupervisor do
     ] |> supervise(strategy: :simple_one_for_one)
   end
 
-  def start_child(topic) do
-    :ok = case Supervisor.start_child(__MODULE__, [topic]) do
+  def start_child(name \\ __MODULE__, topic) do
+    :ok = case Supervisor.start_child(name, [topic, [name: via(topic)]]) do
       {:ok, _pid} ->
         :ok
       {:error, {:already_started, _pid}} ->
@@ -23,7 +25,10 @@ defmodule Reader.EventQueueSupervisor do
     end
   end
 
-  def terminate_child(topic) do
-    Reader.EventQueueConsumer.terminate(__MODULE__, topic)
+  def terminate_child(name \\ __MODULE__, topic) do
+    Supervisor.terminate_child(name, topic |> child_name() |> :gproc.lookup_pid)
   end
+
+  defp child_name(topic), do: {:n, :l, {:topic_reader, topic}}
+  defp via(topic), do: {:via, :gproc, child_name(topic)}
 end
