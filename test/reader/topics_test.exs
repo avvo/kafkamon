@@ -1,5 +1,5 @@
 defmodule Reader.TopicsTest do
-  use ExUnit.Case, async: false
+  use ExUnit.Case, async: true
 
   setup do
     {:ok, kafka} = Kafka.Mock.start_link

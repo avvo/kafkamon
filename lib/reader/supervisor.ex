@@ -7,7 +7,7 @@ defmodule Reader.Supervisor do
     [
       supervisor(Reader.EventQueueSupervisor, []),
       worker(Reader.EventQueueForeman, []),
-      worker(Reader.Logger, []),
+      worker(Reader.Logger, [[name: Reader.Logger]]),
       worker(Reader.Topics, [[
         auto_fetch: Application.fetch_env!(:kafkamon, :auto_topic_fetching),
         name: Reader.Topics,

@@ -10,6 +10,6 @@ config :kafkamon, Kafkamon.Endpoint,
   server: false
 
 # Print only warnings and errors during test
-config :logger, level: :warn
+config :logger, :console, level: :error
 
 config :kafkamon, Kafka, impl: Kafka.Mock

@@ -3,11 +3,21 @@ defmodule Reader.Logger do
 
   use GenServer
 
-  def start_link, do: GenServer.start_link(__MODULE__, :ok, name: __MODULE__)
+  def start_link(opts \\ []) do
+    GenServer.start_link(__MODULE__, :ok, Keyword.take(opts, :name))
+  end
 
   def init(:ok) do
     Reader.TopicBroadcast.subscribe()
     {:ok, []}
+  end
+
+  def known_topics(name \\ __MODULE__) do
+    GenServer.call(name, :known_topics)
+  end
+
+  def handle_call(:known_topics, _from, known_topics) do
+    {:reply, known_topics, known_topics}
   end
 
   def handle_info({:topics, old, new}, known_topics) do
