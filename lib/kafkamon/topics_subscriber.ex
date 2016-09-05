@@ -1,14 +1,14 @@
 defmodule Kafkamon.TopicsSubscriber do
   use GenServer
 
-  def start_link, do: GenServer.start_link(__MODULE__, [], name: __MODULE__)
+  def start_link, do: GenServer.start_link(__MODULE__, :ok, name: __MODULE__)
 
-  def init([] = known_topics) do
+  def init(:ok) do
     Reader.TopicBroadcast.subscribe()
-    {:ok, known_topics}
+    {:ok, []}
   end
 
-  def handle_cast({:topics, old_topics, new_topics}, known_topics) do
+  def handle_info({:topics, old_topics, new_topics}, known_topics) do
     all_topics = ((known_topics |> Enum.reject(&(&1 in old_topics))) ++ new_topics) |> Enum.uniq
 
     Kafkamon.Endpoint.broadcast("topics", "change", %{
@@ -23,6 +23,8 @@ defmodule Kafkamon.TopicsSubscriber do
 
     {:noreply, all_topics}
   end
+
+  def handle_info(_msg, state), do: {:noreply, state}
 
   def handle_cast({:message, topic, message, offset}, state) do
     Kafkamon.Endpoint.broadcast("topic:#{topic}",

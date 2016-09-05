@@ -15,6 +15,8 @@ defmodule Reader.Topics do
     {:ok, []}
   end
 
+  ## Client interface
+
   def new_subscriber(name \\ __MODULE__) do
     GenServer.cast(name, {:new_subscriber, self()})
   end
@@ -27,12 +29,14 @@ defmodule Reader.Topics do
     GenServer.call(name, :current_topics)
   end
 
+  ## Server interface
+
   def handle_call(:current_topics, _from, topics) do
     {:reply, topics, topics}
   end
 
   def handle_cast({:new_subscriber, from}, topics) do
-    GenServer.cast(from, {:topics, [], topics})
+    Reader.TopicBroadcast.notify(from, [], topics)
     {:noreply, topics}
   end
 
