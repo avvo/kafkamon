@@ -9,6 +9,7 @@ defmodule Reader.LoggerTest do
 
   test "logs topics change", %{logger: logger} do
     assert Reader.Logger.known_topics(logger) == []
+    capture_log(fn -> 1 end)
     assert capture_log([level: :info, format: "$message", colors: [enabled: false]], fn ->
       Reader.TopicBroadcast.notify(logger, ["old", "topics"], ["new", "hotness"])
       assert Reader.Logger.known_topics(logger) == ["new", "hotness"]
