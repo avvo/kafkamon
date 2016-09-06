@@ -24,11 +24,11 @@ defmodule Reader.Logger do
     all_topics = ((known_topics |> Enum.reject(&(&1 in old))) ++ new) |> Enum.uniq
 
     new |> Enum.reject(&(&1 in known_topics)) |> Enum.each(fn topic ->
-      Reader.EventQueueBroadcast.subscribe(topic)
+      Reader.EventQueue.Broadcast.subscribe(topic)
     end)
 
     old |> Enum.filter(&(&1 in known_topics)) |> Enum.each(fn topic ->
-      Reader.EventQueueBroadcast.unsubscribe(topic)
+      Reader.EventQueue.Broadcast.unsubscribe(topic)
     end)
 
     Logger.info "Topics changed. Removed: #{inspect old}, Added: #{inspect new}"

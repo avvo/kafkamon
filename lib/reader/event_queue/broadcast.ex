@@ -1,4 +1,4 @@
-defmodule Reader.EventQueueBroadcast do
+defmodule Reader.EventQueue.Broadcast do
   def subscribe(topic), do: topic |> key() |> :gproc.reg()
 
   def unsubscribe(topic), do: topic |> key() |> :gproc.unreg()

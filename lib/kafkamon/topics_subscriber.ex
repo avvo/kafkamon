@@ -40,11 +40,11 @@ defmodule Kafkamon.TopicsSubscriber do
 
   defp topic_added(topic) do
     Kafkamon.Endpoint.broadcast("topic:#{topic}", "subscribe", %{})
-    Reader.EventQueueBroadcast.subscribe(topic)
+    Reader.EventQueue.Broadcast.subscribe(topic)
   end
 
   def topic_removed(topic) do
-    Reader.EventQueueBroadcast.unsubscribe(topic)
+    Reader.EventQueue.Broadcast.unsubscribe(topic)
     Kafkamon.Endpoint.broadcast("topic:#{topic}", "unsubscribe", %{})
   end
 end

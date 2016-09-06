@@ -1,4 +1,4 @@
-defmodule Reader.EventQueueSupervisor do
+defmodule Reader.EventQueue.Supervisor do
   require Logger
   use Supervisor
 
@@ -8,7 +8,7 @@ defmodule Reader.EventQueueSupervisor do
 
   def init(:ok) do
     [
-      worker(Reader.EventQueueConsumer, [], restart: :transient)
+      worker(Reader.EventQueue.Consumer, [], restart: :transient)
     ] |> supervise(strategy: :simple_one_for_one)
   end
 
@@ -17,10 +17,10 @@ defmodule Reader.EventQueueSupervisor do
       {:ok, _pid} ->
         :ok
       {:error, {:already_started, _pid}} ->
-        Logger.info("Reader.EventQueueSupervisor already started child for #{topic}")
+        Logger.info("Reader.EventQueue.Supervisor already started child for #{topic}")
         :ok
       error ->
-        Logger.error("Reader.EventQueueSupervisor error #{topic}: #{inspect error}")
+        Logger.error("Reader.EventQueue.Supervisor error #{topic}: #{inspect error}")
         :error
     end
   end

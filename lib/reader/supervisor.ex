@@ -5,8 +5,8 @@ defmodule Reader.Supervisor do
 
   def init(:ok) do
     [
-      supervisor(Reader.EventQueueSupervisor, [[name: Reader.EventQueueSupervisor]]),
-      worker(Reader.EventQueueForeman, [[name: Reader.EventQueueForeman]]),
+      supervisor(Reader.EventQueue.Supervisor, [[name: Reader.EventQueue.Supervisor]]),
+      worker(Reader.EventQueue.Foreman, [[name: Reader.EventQueue.Foreman]]),
       worker(Reader.Logger, [[name: Reader.Logger]]),
       worker(Reader.Topics, [[
         auto_fetch: Application.fetch_env!(:kafkamon, :auto_topic_fetching),

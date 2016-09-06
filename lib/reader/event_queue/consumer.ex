@@ -1,4 +1,4 @@
-defmodule Reader.EventQueueConsumer do
+defmodule Reader.EventQueue.Consumer do
   require Logger
   use GenServer
 
@@ -26,9 +26,9 @@ defmodule Reader.EventQueueConsumer do
         try do
           message.value
           |> Avrolixr.Codec.decode!
-          |> Reader.EventQueueBroadcast.notify(topic, message.offset)
+          |> Reader.EventQueue.Broadcast.notify(topic, message.offset)
         rescue
-          error -> Reader.EventQueueBroadcast.notify({:error, error}, topic, message.offset)
+          error -> Reader.EventQueue.Broadcast.notify({:error, error}, topic, message.offset)
         end
       end
     end)

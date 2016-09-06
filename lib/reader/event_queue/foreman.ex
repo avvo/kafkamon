@@ -1,8 +1,8 @@
-defmodule Reader.EventQueueForeman do
+defmodule Reader.EventQueue.Foreman do
   use GenServer
 
   def start_link(opts \\ []) do
-    supervisor = Keyword.get(opts, :supervisor, Reader.EventQueueSupervisor)
+    supervisor = Keyword.get(opts, :supervisor, Reader.EventQueue.Supervisor)
     GenServer.start_link(__MODULE__, supervisor, Keyword.take(opts, [:name]))
   end
 
@@ -37,10 +37,10 @@ defmodule Reader.EventQueueForeman do
   def handle_info(_msg, state), do: {:noreply, state}
 
   defp topic_added(supervisor, topic) do
-    Reader.EventQueueSupervisor.start_child(supervisor, topic)
+    Reader.EventQueue.Supervisor.start_child(supervisor, topic)
   end
 
   def topic_removed(supervisor, topic) do
-    Reader.EventQueueSupervisor.terminate_child(supervisor, topic)
+    Reader.EventQueue.Supervisor.terminate_child(supervisor, topic)
   end
 end
