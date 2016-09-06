@@ -1,5 +1,6 @@
 defmodule Reader.EventQueue.ForemanTest do
   use ExUnit.Case, async: true
+  import ExUnit.CaptureLog
 
   alias Reader.EventQueue.Foreman
 
@@ -11,8 +12,10 @@ defmodule Reader.EventQueue.ForemanTest do
 
   test "starts a new child worker when a topic is added", %{foreman: foreman, eqs: eqs} do
     assert Supervisor.count_children(eqs).workers == 0
-    send foreman, {:topics, [], ["foo"]}
-    assert Foreman.known_topics(foreman) == ["foo"]
+    assert capture_log([level: :info, format: "$message", colors: [enabled: false]], fn ->
+      send foreman, {:topics, [], ["foo"]}
+      assert Foreman.known_topics(foreman) == ["foo"]
+    end) == "" # no logs, like already started
     assert Supervisor.count_children(eqs).workers == 1
   end
 
