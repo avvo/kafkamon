@@ -36,16 +36,15 @@ defmodule Reader.Logger do
     {:noreply, new_topics}
   end
 
-  def handle_info(_msg, state), do: {:noreply, state}
-
-  def handle_cast({:message, topic, {:error, error}, offset}, state) do
+  def handle_info({:message, topic, {:error, error}, offset}, state) do
     Logger.error "[#{topic}##{offset}] Error parsing message, got #{inspect error}"
     {:noreply, state}
   end
 
-  def handle_cast({:message, topic, message, offset}, state) do
+  def handle_info({:message, topic, message, offset}, state) do
     Logger.info "[#{topic}##{offset}] #{inspect message}"
     {:noreply, state}
   end
 
+  def handle_info(_msg, state), do: {:noreply, state}
 end

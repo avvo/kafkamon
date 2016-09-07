@@ -21,9 +21,7 @@ defmodule Kafkamon.TopicsSubscriber do
     {:noreply, new_topics}
   end
 
-  def handle_info(_msg, state), do: {:noreply, state}
-
-  def handle_cast({:message, topic, message, offset}, state) do
+  def handle_info({:message, topic, message, offset}, state) do
     Kafkamon.Endpoint.broadcast("topic:#{topic}",
       "new:message",
       %{
@@ -34,6 +32,8 @@ defmodule Kafkamon.TopicsSubscriber do
 
     {:noreply, state}
   end
+
+  def handle_info(_msg, state), do: {:noreply, state}
 
   defp topic_added(topic) do
     Kafkamon.Endpoint.broadcast("topic:#{topic}", "subscribe", %{})

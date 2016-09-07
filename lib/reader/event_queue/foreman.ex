@@ -19,14 +19,12 @@ defmodule Reader.EventQueue.Foreman do
     {:reply, known_topics, state}
   end
 
-  def handle_info({:topics, old_topics, new_topics}, {supervisor, known_topics}) do
-    all_topics = ((known_topics |> Enum.reject(&(&1 in old_topics))) ++ new_topics) |> Enum.uniq
-
+  def handle_info({:topics, new_topics}, {supervisor, known_topics}) do
     new_topics |> Enum.reject(&(&1 in known_topics)) |> Enum.each(&topic_added(supervisor, &1))
 
-    old_topics |> Enum.filter(&(&1 in known_topics)) |> Enum.each(&topic_removed(supervisor, &1))
+    known_topics |> Enum.reject(&(&1 in new_topics)) |> Enum.each(&topic_removed(supervisor, &1))
 
-    {:noreply, {supervisor, all_topics}}
+    {:noreply, {supervisor, new_topics}}
   end
 
   def handle_info(:topic_subscribe, state) do
