@@ -44,15 +44,13 @@ defmodule Reader.EventQueue.Consumer do
   end
 
   defp broadcast_message(topic, %{value: value, offset: offset}) do
-    Task.async(fn ->
-      try do
-        value
-        |> Avrolixr.Codec.decode!
-        |> Reader.EventQueue.Broadcast.notify(topic, offset)
-      rescue
-        error -> Reader.EventQueue.Broadcast.notify({:error, error}, topic, offset)
-      end
-    end)
+    try do
+      value
+      |> Avrolixr.Codec.decode!
+      |> Reader.EventQueue.Broadcast.notify(topic, offset)
+    rescue
+      error -> Reader.EventQueue.Broadcast.notify({:error, error}, topic, offset)
+    end
   end
 
 end
