@@ -20,20 +20,20 @@ defmodule Reader.Logger do
     {:reply, known_topics, known_topics}
   end
 
-  def handle_info({:topics, old, new}, known_topics) do
-    all_topics = ((known_topics |> Enum.reject(&(&1 in old))) ++ new) |> Enum.uniq
-
-    new |> Enum.reject(&(&1 in known_topics)) |> Enum.each(fn topic ->
+  def handle_info({:topics, new_topics}, known_topics) do
+    new_topics |> Enum.reject(&(&1 in known_topics)) |> Enum.each(fn topic ->
+      Logger.info "Logger subscribing to #{topic}"
       Reader.EventQueue.Broadcast.subscribe(topic)
     end)
 
-    old |> Enum.filter(&(&1 in known_topics)) |> Enum.each(fn topic ->
+    known_topics |> Enum.reject(&(&1 in new_topics)) |> Enum.each(fn topic ->
+      Logger.info "Logger unsubscribing to #{topic}"
       Reader.EventQueue.Broadcast.unsubscribe(topic)
     end)
 
-    Logger.info "Topics changed. Removed: #{inspect old}, Added: #{inspect new}"
+    Logger.info "Topics changed. Was: #{inspect known_topics}, Now: #{inspect new_topics}"
 
-    {:noreply, all_topics}
+    {:noreply, new_topics}
   end
 
   def handle_info(_msg, state), do: {:noreply, state}

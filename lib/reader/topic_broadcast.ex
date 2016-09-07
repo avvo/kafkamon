@@ -4,10 +4,10 @@ defmodule Reader.TopicBroadcast do
     Reader.Topics.new_subscriber()
   end
 
-  def notify(old_topics, new_topics) do
-    :gproc.send {:p, :l, __MODULE__}, {:topics, old_topics, new_topics}
+  def notify(new_topics) do
+    :gproc.send {:p, :l, __MODULE__}, {:topics, new_topics}
   end
-  def notify(to, old_topics, new_topics) do
-    send to, {:topics, old_topics, new_topics}
+  def notify(to, new_topics) do
+    send to, {:topics, new_topics}
   end
 end

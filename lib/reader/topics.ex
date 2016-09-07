@@ -36,7 +36,7 @@ defmodule Reader.Topics do
   end
 
   def handle_cast({:new_subscriber, from}, topics) do
-    Reader.TopicBroadcast.notify(from, [], topics)
+    Reader.TopicBroadcast.notify(from, topics)
     {:noreply, topics}
   end
 
@@ -44,10 +44,7 @@ defmodule Reader.Topics do
     new_topics = topics()
 
     if new_topics != old_topics do
-      new = new_topics |> Enum.reject(&(&1 in old_topics))
-      old = old_topics |> Enum.reject(&(&1 in new_topics))
-
-      Reader.TopicBroadcast.notify(old, new)
+      Reader.TopicBroadcast.notify(new_topics)
     end
 
     {:noreply, new_topics}

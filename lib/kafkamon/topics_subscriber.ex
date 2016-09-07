@@ -8,20 +8,17 @@ defmodule Kafkamon.TopicsSubscriber do
     {:ok, []}
   end
 
-  def handle_info({:topics, old_topics, new_topics}, known_topics) do
-    all_topics = ((known_topics |> Enum.reject(&(&1 in old_topics))) ++ new_topics) |> Enum.uniq
-
+  def handle_info({:topics, new_topics}, known_topics) do
     Kafkamon.Endpoint.broadcast("topics", "change", %{
-      "added" => new_topics,
-      "removed" => old_topics,
-      "all" => all_topics,
+      "previous" => known_topics,
+      "now" => new_topics,
     })
 
     new_topics |> Enum.reject(&(&1 in known_topics)) |> Enum.each(&topic_added/1)
 
-    old_topics |> Enum.filter(&(&1 in known_topics)) |> Enum.each(&topic_removed/1)
+    known_topics |> Enum.reject(&(&1 in new_topics)) |> Enum.each(&topic_removed/1)
 
-    {:noreply, all_topics}
+    {:noreply, new_topics}
   end
 
   def handle_info(_msg, state), do: {:noreply, state}
