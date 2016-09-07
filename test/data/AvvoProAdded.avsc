@@ -1,0 +1,32 @@
+{
+  "type" : "record",
+  "name" : "AvvoProAdded",
+  "namespace" : "AvvoEvent",
+  "doc" : "The payload for an avvo pro added event, fired when a professional becomes AvvoPro",
+  "fields" : [ {
+    "name" : "event",
+    "type" : {
+      "type" : "record",
+      "name" : "Event",
+      "doc" : "The main class for this protocol",
+      "fields" : [ {
+        "name" : "name",
+        "type" : "string",
+        "doc" : "The name of the event"
+      }, {
+        "name" : "timestamp",
+        "type" : "int",
+        "doc" : "The timestamp of the event"
+      }, {
+        "name" : "app_id",
+        "type" : "string",
+        "doc" : "The id of the generating application"
+      } ]
+    },
+    "doc" : "Basic event data"
+  }, {
+    "name" : "lawyer_id",
+    "type" : "int",
+    "doc" : "The identifier for the professional"
+  } ]
+}

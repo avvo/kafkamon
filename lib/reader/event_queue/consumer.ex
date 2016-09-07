@@ -45,6 +45,8 @@ defmodule Reader.EventQueue.Consumer do
     end
   end
 
-  defp worker_name(topic), do: :"worker_#{topic}"
+  defp worker_name(topic) do
+    :"worker_#{topic}"
+  end
 
 end

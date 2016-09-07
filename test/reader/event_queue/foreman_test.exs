@@ -5,6 +5,7 @@ defmodule Reader.EventQueue.ForemanTest do
   alias Reader.EventQueue.Foreman
 
   setup do
+    {:ok, _kafka_mock} = Kafka.Mock.start_link
     {:ok, eqs} = Reader.EventQueue.Supervisor.start_link
     {:ok, foreman} = Foreman.start_link(supervisor: eqs)
     {:ok, eqs: eqs, foreman: foreman}

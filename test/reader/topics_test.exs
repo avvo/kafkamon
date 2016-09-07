@@ -3,7 +3,7 @@ defmodule Reader.TopicsTest do
 
   setup do
     {:ok, kafka} = Kafka.Mock.start_link
-    {:ok, topics_pid} = Reader.Topics.start_link([kafka_module: Kafka.Mock])
+    {:ok, topics_pid} = Reader.Topics.start_link([])
     {:ok, topics_pid: topics_pid, kafka: kafka}
   end
 
