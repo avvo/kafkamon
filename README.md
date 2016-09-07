@@ -19,3 +19,8 @@ Ready to run in production? Please [check our deployment guides](http://www.phoe
   * Source: https://github.com/phoenixframework/phoenix
 
 iex --name console@127.0.0.1 --cookie kafkamon --remsh kafkamon@127.0.0.1
+
+### Test kafka message
+```
+KafkaEx.produce "users", 0, Avrolixr.Codec.encode!(%{event: %{app_id: "a", name: "n", timestamp: 0}, lawyer_id: 0}, File.read!("test/data/AvvoProAdded.avsc"), 'AvvoEvent.AvvoProAdded')
+```
