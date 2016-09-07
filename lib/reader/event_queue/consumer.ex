@@ -22,15 +22,9 @@ defmodule Reader.EventQueue.Consumer do
 
   def handle_cast(:begin_streaming, topic) do
     Task.async(fn ->
-      for message <- Kafka.stream(topic, 0, offset: latest_offset(topic), worker_name: worker_name(topic)) do
-        try do
-          message.value
-          |> Avrolixr.Codec.decode!
-          |> Reader.EventQueue.Broadcast.notify(topic, message.offset)
-        rescue
-          error -> Reader.EventQueue.Broadcast.notify({:error, error}, topic, message.offset)
-        end
-      end
+      Kafka.stream(topic, 0, offset: latest_offset(topic), worker_name: worker_name(topic))
+      |> Stream.each(&broadcast_message(topic, &1))
+      |> Stream.run
     end)
     {:noreply, topic}
   end
@@ -47,6 +41,18 @@ defmodule Reader.EventQueue.Consumer do
 
   defp worker_name(topic) do
     :"worker_#{topic}"
+  end
+
+  defp broadcast_message(topic, %{value: value, offset: offset}) do
+    Task.async(fn ->
+      try do
+        value
+        |> Avrolixr.Codec.decode!
+        |> Reader.EventQueue.Broadcast.notify(topic, offset)
+      rescue
+        error -> Reader.EventQueue.Broadcast.notify({:error, error}, topic, offset)
+      end
+    end)
   end
 
 end
