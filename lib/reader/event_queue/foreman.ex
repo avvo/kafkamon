@@ -2,12 +2,16 @@ defmodule Reader.EventQueue.Foreman do
   use GenServer
 
   def start_link(opts \\ []) do
-    supervisor = Keyword.get(opts, :supervisor, Reader.EventQueue.Supervisor)
-    GenServer.start_link(__MODULE__, supervisor, Keyword.take(opts, [:name]))
+    GenServer.start_link(__MODULE__, opts, Keyword.take(opts, [:name]))
   end
 
-  def init(supervisor) do
-    send self, :topic_subscribe
+  def init(opts \\ []) do
+    if Keyword.get(opts, :topic_subscribe, true) do
+      send self, :topic_subscribe
+    end
+
+    supervisor = Keyword.get(opts, :supervisor, Reader.EventQueue.Supervisor)
+
     {:ok, {supervisor, []}}
   end
 
