@@ -1,16 +1,13 @@
 ---
-machine:
-  environment:
-    PATH: "$HOME/.asdf/bin:$HOME/.asdf/shims:$PATH"
 dependencies:
   cache_directories:
-    - ~/.asdf
     - ~/dependencies
     - ~/.mix
     - _build
     - deps
-  pre:
+  override:
     - bin/ci-prepare.sh
+    - npm install
 test:
   override:
     - bin/ci-run.sh
