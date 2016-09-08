@@ -5,9 +5,8 @@ dependencies:
     - ~/.mix
     - _build
     - deps
-  override:
+  pre:
     - bin/ci-prepare.sh
-    - npm install
 test:
   override:
     - bin/ci-run.sh
