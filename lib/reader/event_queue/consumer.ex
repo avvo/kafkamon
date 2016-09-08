@@ -22,7 +22,10 @@ defmodule Reader.EventQueue.Consumer do
 
   def handle_cast(:begin_streaming, topic) do
     Task.async(fn ->
-      Kafka.stream(topic, 0, offset: latest_offset(topic), worker_name: worker_name(topic))
+      Kafka.stream(topic, 0,
+        offset: latest_offset(topic),
+        worker_name: worker_name(topic),
+        handler: Kafka.NullHandler)
       |> Stream.each(&broadcast_message(topic, &1))
       |> Stream.run
     end)
