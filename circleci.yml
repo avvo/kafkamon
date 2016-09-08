@@ -1,0 +1,18 @@
+---
+machine:
+  environment:
+    PATH: "$HOME/.asdf/bin:$HOME/.asdf/shims:$PATH"
+dependencies:
+  cache_directories:
+    - ~/.asdf
+    - ~/dependencies
+    - ~/.mix
+    - _build
+    - deps
+  pre:
+    - bin/ci-prepare.sh
+test:
+  override:
+    - bin/ci-run.sh
+    - mkdir -p $CIRCLE_TEST_REPORTS/exunit
+    - cp _build/test/lib/kafkamon/test-junit-report.xml $CIRCLE_TEST_REPORTS/exunit

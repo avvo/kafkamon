@@ -40,7 +40,6 @@ defmodule Kafkamon.Mixfile do
       :conform_exrm,
       :gproc,
       :logger_file_backend,
-      :progress_bar,
 
       :avrolixr,
       :erlavro,
@@ -66,7 +65,8 @@ defmodule Kafkamon.Mixfile do
       {:kafka_ex, "~> 0.5.0"},
       {:gproc, "~> 0.5.0"},
       {:logger_file_backend, "~> 0.0"},
-      {:progress_bar, "> 0.0.0"},
+      {:progress_bar, "> 0.0.0", only: [:test, :dev]},
+      {:junit_formatter, "~> 1.1.0", only: :test},
 
       {:phoenix, "~> 1.2.0"},
       {:phoenix_pubsub, "~> 1.0"},
