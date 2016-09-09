@@ -1,5 +1,7 @@
 # Kafkamon
 
+[![CircleCI](https://circleci.com/gh/avvo/kafkamon.svg?style=svg)](https://circleci.com/gh/avvo/kafkamon)
+
 To start your Phoenix app:
 
   * Install dependencies with `mix deps.get`
