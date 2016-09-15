@@ -22,7 +22,7 @@ defmodule Reader.EventQueue.Consumer do
 
   def handle_cast(:begin_streaming, {topic, partition}) do
     Task.async(fn ->
-      Kafka.stream(topic, partition,
+      Kafka.stream(topic, partition - 1,
         offset: latest_offset(topic, partition),
         worker_name: worker_name(topic, partition),
         handler: Kafka.NullHandler)
@@ -33,7 +33,7 @@ defmodule Reader.EventQueue.Consumer do
   end
 
   defp latest_offset(topic, partition) do
-    case Kafka.latest_offset(topic, partition) do
+    case Kafka.latest_offset(topic, partition - 1) do
       [%{partition_offsets: [%{offset: [offset]}]}] ->
         offset
       error ->
