@@ -37,7 +37,7 @@ defmodule Kafka.Mock do
       |> get_gen_event_pid()
       |> GenEvent.stream()
       |> Stream.filter_map(fn {^topic, _, _} -> true; _ -> false end,
-                          fn {_, msg, offset} -> %{value: msg, offset: offset} end)
+                           fn {_, msg, offset} -> %{value: msg, offset: offset} end)
     end
   end
 
