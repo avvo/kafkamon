@@ -21,13 +21,13 @@ defmodule Reader.Logger do
   end
 
   def handle_info({:topics, new_topics}, known_topics) do
-    new_topics |> Enum.reject(&(&1 in known_topics)) |> Enum.each(fn topic ->
-      Logger.info "Logger subscribing to #{topic}"
+    new_topics |> Enum.reject(&(&1 in known_topics)) |> Enum.each(fn {topic, n} ->
+      Logger.info "Logger subscribing to #{topic} ##{n}"
       Reader.EventQueue.Broadcast.subscribe(topic)
     end)
 
-    known_topics |> Enum.reject(&(&1 in new_topics)) |> Enum.each(fn topic ->
-      Logger.info "Logger unsubscribing to #{topic}"
+    known_topics |> Enum.reject(&(&1 in new_topics)) |> Enum.each(fn {topic, n} ->
+      Logger.info "Logger unsubscribing to #{topic} ##{n}"
       Reader.EventQueue.Broadcast.unsubscribe(topic)
     end)
 

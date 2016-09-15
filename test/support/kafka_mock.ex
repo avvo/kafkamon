@@ -5,9 +5,10 @@ defmodule Kafka.Mock do
 
   def set_topics(requesting_pid, new_topics) do
     update(requesting_pid, fn state ->
-      state |> Map.put(:topics, new_topics)
+      state |> Map.put(:topics, new_topics |> Enum.map(&format_for_kafka_ex/1))
     end)
   end
+
 
   def send_message(consumer_pid, topic, encoded_message, offset) do
     get_gen_event_pid(consumer_pid)
@@ -20,7 +21,7 @@ defmodule Kafka.Mock do
     topics = get(:topics, [])
 
     %{
-      topic_metadatas: topics |> Enum.map(& %{topic: &1})
+      topic_metadatas: topics
     }
   end
 
@@ -87,5 +88,21 @@ defmodule Kafka.Mock do
 
       {gen_event, gen_event}
     end
+  end
+
+  defp format_for_kafka_ex({topic_name, number_of_partitions}) do
+    %KafkaEx.Protocol.Metadata.TopicMetadata{
+      error_code: 0,
+      partition_metadatas: Enum.map(1..number_of_partitions, fn n ->
+        %KafkaEx.Protocol.Metadata.PartitionMetadata{
+          error_code: 0,
+          isrs: [0],
+          leader: 0,
+          partition_id: n,
+          replicas: [0]
+        }
+      end),
+      topic: topic_name
+    }
   end
 end

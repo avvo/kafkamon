@@ -61,8 +61,10 @@ defmodule Reader.Topics do
 
   defp topics() do
     Kafka.metadata.topic_metadatas
-    |> Enum.map(&(&1.topic))
-    |> Enum.reject(&(String.starts_with?(&1, "_")))
-    |> Enum.sort
+    |> Enum.reject(&(String.starts_with?(&1.topic, "_")))
+    |> Enum.sort_by(&(&1.topic))
+    |> Enum.map(fn topic_metadata ->
+      {topic_metadata.topic, topic_metadata.partition_metadatas |> length}
+    end)
   end
 end

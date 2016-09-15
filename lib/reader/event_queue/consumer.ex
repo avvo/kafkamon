@@ -2,38 +2,38 @@ defmodule Reader.EventQueue.Consumer do
   require Logger
   use GenServer
 
-  def start_link(topic, opts \\ []) do
-    GenServer.start_link(__MODULE__, topic, Keyword.take(opts, [:name]))
+  def start_link(topic, partition, opts \\ []) do
+    GenServer.start_link(__MODULE__, {topic, partition}, Keyword.take(opts, [:name]))
   end
 
-  def init(topic) do
-    :ok = case Kafka.create_worker(worker_name(topic)) do
+  def init({topic, partition}) do
+    :ok = case Kafka.create_worker(worker_name(topic, partition)) do
       {:ok, _pid} -> :ok
       {:error, {:already_started, _pid}} ->
-        Logger.error "Already started kafka_worker for #{topic}"
+        Logger.error "Already started kafka_worker for #{topic}##{partition}"
         :ok
       error ->
-        Logger.error "Could not start kafka worker for #{topic}: #{inspect error}"
+        Logger.error "Could not start kafka worker for #{topic}#{partition}: #{inspect error}"
         :error
     end
     GenServer.cast(self, :begin_streaming)
-    {:ok, topic}
+    {:ok, {topic, partition}}
   end
 
-  def handle_cast(:begin_streaming, topic) do
+  def handle_cast(:begin_streaming, {topic, partition}) do
     Task.async(fn ->
-      Kafka.stream(topic, 0,
-        offset: latest_offset(topic),
-        worker_name: worker_name(topic),
+      Kafka.stream(topic, partition,
+        offset: latest_offset(topic, partition),
+        worker_name: worker_name(topic, partition),
         handler: Kafka.NullHandler)
       |> Stream.each(&broadcast_message(topic, &1))
       |> Stream.run
     end)
-    {:noreply, topic}
+    {:noreply, {topic, partition}}
   end
 
-  defp latest_offset(topic) do
-    case Kafka.latest_offset(topic, 0) do
+  defp latest_offset(topic, partition) do
+    case Kafka.latest_offset(topic, partition) do
       [%{partition_offsets: [%{offset: [offset]}]}] ->
         offset
       error ->
@@ -42,18 +42,14 @@ defmodule Reader.EventQueue.Consumer do
     end
   end
 
-  defp worker_name(topic) do
-    :"worker_#{topic}"
+  defp worker_name(topic, partition) do
+    :"worker_#{topic}_#{partition}"
   end
 
   defp broadcast_message(topic, %{value: value, offset: offset}) do
-    try do
-      value
-      |> Avrolixr.Codec.decode!
-      |> Reader.EventQueue.Broadcast.notify(topic, offset)
-    rescue
-      error -> Reader.EventQueue.Broadcast.notify({:error, error}, topic, offset)
-    end
+    value
+    |> Avrolixr.Codec.decode!
+    |> Reader.EventQueue.Broadcast.notify(topic, offset)
   end
 
 end

@@ -35,12 +35,12 @@ defmodule Kafkamon.TopicsSubscriber do
 
   def handle_info(_msg, state), do: {:noreply, state}
 
-  defp topic_added(topic) do
+  defp topic_added({topic, _partitions}) do
     Kafkamon.Endpoint.broadcast("topic:#{topic}", "subscribe", %{})
     Reader.EventQueue.Broadcast.subscribe(topic)
   end
 
-  def topic_removed(topic) do
+  def topic_removed({topic, _partitions}) do
     Reader.EventQueue.Broadcast.unsubscribe(topic)
     Kafkamon.Endpoint.broadcast("topic:#{topic}", "unsubscribe", %{})
   end

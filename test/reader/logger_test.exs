@@ -12,17 +12,17 @@ defmodule Reader.LoggerTest do
 
     capture_log(fn -> 1 end)
     assert capture_log([level: :info, format: "$message\n", colors: [enabled: false]], fn ->
-      Reader.TopicBroadcast.notify(logger, ["old", "busted"])
-      Reader.TopicBroadcast.notify(logger, ["new", "hotness", "busted"])
-      assert Reader.Logger.known_topics(logger) == ["new", "hotness", "busted"]
+      Reader.TopicBroadcast.notify(logger, [{"old", 3}, {"busted", 1}])
+      Reader.TopicBroadcast.notify(logger, [{"new", 3}, {"hotness", 3}, {"busted", 1}])
+      assert Reader.Logger.known_topics(logger) == [{"new", 3}, {"hotness", 3}, {"busted", 1}]
     end) == """
-    Logger subscribing to old
-    Logger subscribing to busted
-    Topics changed. Was: [], Now: ["old", "busted"]
-    Logger subscribing to new
-    Logger subscribing to hotness
-    Logger unsubscribing to old
-    Topics changed. Was: ["old", "busted"], Now: ["new", "hotness", "busted"]
+    Logger subscribing to old #3
+    Logger subscribing to busted #1
+    Topics changed. Was: [], Now: [{"old", 3}, {"busted", 1}]
+    Logger subscribing to new #3
+    Logger subscribing to hotness #3
+    Logger unsubscribing to old #3
+    Topics changed. Was: [{"old", 3}, {"busted", 1}], Now: [{"new", 3}, {"hotness", 3}, {"busted", 1}]
     """
   end
 end
