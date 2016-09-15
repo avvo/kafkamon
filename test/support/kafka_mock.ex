@@ -29,12 +29,16 @@ defmodule Kafka.Mock do
   end
 
   def stream(topic, _partition, _opts \\ []) do
-    # Because we stream from within a Task.async, we need to grab the parent Consumer pid
-    self |> Process.info |> Keyword.get(:links) |> hd
-    |> get_gen_event_pid()
-    |> GenEvent.stream()
-    |> Stream.filter_map(fn {^topic, _, _} -> true; _ -> false end,
-                         fn {_, msg, offset} -> %{value: msg, offset: offset} end)
+    case Process.whereis(__MODULE__) do
+      nil -> []
+        _ ->
+      # Because we stream from within a Task.async, we need to grab the parent Consumer pid
+      self |> Process.info |> Keyword.get(:links) |> hd
+      |> get_gen_event_pid()
+      |> GenEvent.stream()
+      |> Stream.filter_map(fn {^topic, _, _} -> true; _ -> false end,
+                          fn {_, msg, offset} -> %{value: msg, offset: offset} end)
+    end
   end
 
   def latest_offset(_topic, _partition, _name \\ KafkaEx.Server) do
