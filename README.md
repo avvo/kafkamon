@@ -19,6 +19,7 @@ Ready to run in production? Please [check our deployment guides](http://www.phoe
   * Docs: https://hexdocs.pm/phoenix
   * Mailing list: http://groups.google.com/group/phoenix-talk
   * Source: https://github.com/phoenixframework/phoenix
+  * React Folder Structure (PODS): http://engineering.kapost.com/2016/01/organizing-large-react-applications/
 
 iex --name console@127.0.0.1 --cookie kafkamon --remsh kafkamon@127.0.0.1
 
