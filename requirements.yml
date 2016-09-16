@@ -1,0 +1,4 @@
+service_name: kafkamon
+stack_name: kafkamon
+image: dplummer1avvo/kafkamon
+facing: internal
