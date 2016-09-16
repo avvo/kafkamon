@@ -47,9 +47,13 @@ defmodule Reader.EventQueue.Consumer do
   end
 
   defp broadcast_message(topic, %{value: value, offset: offset}) do
-    value
-    |> Avrolixr.Codec.decode!
-    |> Reader.EventQueue.Broadcast.notify(topic, offset)
+    try do
+      value
+      |> Avrolixr.Codec.decode!
+      |> Reader.EventQueue.Broadcast.notify(topic, offset)
+    rescue
+      error -> Logger.error "Could not decode message #{inspect error}"
+    end
   end
 
 end

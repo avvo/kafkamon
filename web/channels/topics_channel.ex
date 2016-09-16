@@ -21,7 +21,7 @@ defmodule Kafkamon.TopicsChannel do
   end
 
   def handle_info(:after_join, socket) do
-    topics = Reader.Topics.current_topics()
+    topics = Kafkamon.TopicsSubscriber.current_topics()
     push socket, "change", %{
       "all" => topics,
       "added" => topics,

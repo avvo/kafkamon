@@ -8,7 +8,17 @@ defmodule Kafkamon.TopicsSubscriber do
     {:ok, []}
   end
 
-  def handle_info({:topics, new_topics}, known_topics) do
+  def current_topics(name \\ __MODULE__) do
+    GenServer.call(name, :current_topics)
+  end
+
+  def handle_call(:current_topics, _from, topics) do
+    {:reply, topics, topics}
+  end
+
+  def handle_info({:topics, new_topic_tuples}, known_topics) do
+    new_topics = new_topic_tuples |> just_names
+
     Kafkamon.Endpoint.broadcast("topics", "change", %{
       "previous" => known_topics,
       "now" => new_topics,
@@ -35,13 +45,17 @@ defmodule Kafkamon.TopicsSubscriber do
 
   def handle_info(_msg, state), do: {:noreply, state}
 
-  defp topic_added({topic, _partitions}) do
+  defp topic_added(topic) do
     Kafkamon.Endpoint.broadcast("topic:#{topic}", "subscribe", %{})
     Reader.EventQueue.Broadcast.subscribe(topic)
   end
 
-  def topic_removed({topic, _partitions}) do
+  def topic_removed(topic) do
     Reader.EventQueue.Broadcast.unsubscribe(topic)
     Kafkamon.Endpoint.broadcast("topic:#{topic}", "unsubscribe", %{})
+  end
+
+  defp just_names(topic_tuples) do
+    topic_tuples |> Enum.map(& elem(&1, 0))
   end
 end
