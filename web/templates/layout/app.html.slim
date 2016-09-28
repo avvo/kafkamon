@@ -7,13 +7,12 @@ html lang="en"
     meta content="" name="description"
     meta content="" name="author"
     title Monitor kafka events
-    link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"
-    link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous"
+    script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"
+    script src="//assets.avvo.com/avvo-ui/0.21.1/avvo_ui_head.min.js"
+    link rel="stylesheet" href="//assets.avvo.com/avvo-ui/0.21.1/avvo_ui.min.css"
     link rel="stylesheet" href="#{static_path(@conn, "/css/app.css")}"
   body
-    header
-      h1 Kafkamon
     main#main role="main"
 
+    script src="//assets.avvo.com/avvo-ui/0.21.1/avvo_ui_foot.min.js"
     script src="#{static_path(@conn, "/js/app.js")}"
-    script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"
