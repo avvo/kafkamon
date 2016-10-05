@@ -8,8 +8,7 @@ RUN apt-get update && \
   git \
   make \
   mysql-client \
-  wget \
-  erlang-xmerl
+  wget
 
 RUN mix do local.hex --force, local.rebar --force, hex.info
 

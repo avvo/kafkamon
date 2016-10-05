@@ -60,6 +60,7 @@ defmodule Kafkamon.Mixfile do
       {:conform, "~> 2.1", override: true},
       {:conform_exrm, "~> 1.0"},
 
+      {:xmerl, github: "otphub/xmerl", compile: "rebar co"},
       {:avrolixr, ">= 0.1.1"},
       {:erlavro, github: "avvo/erlavro", override: true},
       {:kafka_ex, "~> 0.5.0"},

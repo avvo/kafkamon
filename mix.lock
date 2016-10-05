@@ -30,4 +30,5 @@
   "providers": {:hex, :providers, "1.6.0", "db0e2f9043ae60c0155205fcd238d68516331d0e5146155e33d1e79dc452964a", [:rebar3], [{:getopt, "0.8.2", [hex: :getopt, optional: false]}]},
   "ranch": {:hex, :ranch, "1.2.1", "a6fb992c10f2187b46ffd17ce398ddf8a54f691b81768f9ef5f461ea7e28c762", [:make], []},
   "relx": {:hex, :relx, "3.21.0", "91e1ea9f09b4edfda8461901f4b5c5e0226e43ec161e147eeab29f7761df6eb5", [:rebar3], [{:bbmustache, "1.0.4", [hex: :bbmustache, optional: false]}, {:cf, "0.2.1", [hex: :cf, optional: false]}, {:erlware_commons, "0.21.0", [hex: :erlware_commons, optional: false]}, {:getopt, "0.8.2", [hex: :getopt, optional: false]}, {:providers, "1.6.0", [hex: :providers, optional: false]}]},
-  "slime": {:hex, :slime, "0.15.0", "f1df7482a368966eb70ef5c90e16d9d42d21d959f94314abd801de2c24a500d2", [:mix], []}}
+  "slime": {:hex, :slime, "0.15.0", "f1df7482a368966eb70ef5c90e16d9d42d21d959f94314abd801de2c24a500d2", [:mix], []},
+  "xmerl": {:git, "https://github.com/otphub/xmerl.git", "b22f6d02cfc14630d7441ec75fd9d1adad0c7999", []}}
