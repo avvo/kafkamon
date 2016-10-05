@@ -44,6 +44,7 @@ defmodule Kafkamon.Mixfile do
       :avrolixr,
       :erlavro,
       :kafka_ex,
+      :xmerl,
     ]
   end
 

@@ -8,7 +8,8 @@ RUN apt-get update && \
   git \
   make \
   mysql-client \
-  wget
+  wget \
+  rebar
 
 RUN mix do local.hex --force, local.rebar --force, hex.info
 
