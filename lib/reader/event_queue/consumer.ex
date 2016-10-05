@@ -49,17 +49,32 @@ defmodule Reader.EventQueue.Consumer do
   end
 
   defp broadcast_message(topic, partition, %{value: value, offset: offset}) do
-    try do
+    with {:ok, decoded} <- decode(value) do
       %Message{
-        value: value |> Avrolixr.Codec.decode!,
+        value: decoded,
         topic: topic,
         offset: offset,
         partition: partition,
       }
-      |> Reader.EventQueue.Broadcast.notify
-    rescue
-      error -> Logger.error "Could not decode message #{inspect error}"
+      |> broadcast()
     end
   end
 
+  defp decode(value) do
+    try do
+      value |> Avrolixr.Codec.decode
+    rescue
+      error ->
+        Logger.error "Could not decode message: #{inspect error}. Base64 encoded: #{Base.encode64(value)}"
+        :error
+    end
+  end
+
+  defp broadcast(encoded_message = %Message{}) do
+    try do
+      encoded_message |> Reader.EventQueue.Broadcast.notify
+    rescue
+      error -> Logger.error "Could not broadcast message: #{inspect error}"
+    end
+  end
 end
