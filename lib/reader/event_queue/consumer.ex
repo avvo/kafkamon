@@ -2,6 +2,8 @@ defmodule Reader.EventQueue.Consumer do
   require Logger
   use GenServer
 
+  defmodule Message, do: defstruct [:value, :topic, :offset, :partition]
+
   def start_link(topic, partition, opts \\ []) do
     GenServer.start_link(__MODULE__, {topic, partition}, Keyword.take(opts, [:name]))
   end
@@ -26,7 +28,7 @@ defmodule Reader.EventQueue.Consumer do
         offset: latest_offset(topic, partition),
         worker_name: worker_name(topic, partition),
         handler: Kafka.NullHandler)
-      |> Stream.each(&broadcast_message(topic, &1))
+      |> Stream.each(&broadcast_message(topic, partition, &1))
       |> Stream.run
     end)
     {:noreply, {topic, partition}}
@@ -46,11 +48,15 @@ defmodule Reader.EventQueue.Consumer do
     :"worker_#{topic}_#{partition}"
   end
 
-  defp broadcast_message(topic, %{value: value, offset: offset}) do
+  defp broadcast_message(topic, partition, %{value: value, offset: offset}) do
     try do
-      value
-      |> Avrolixr.Codec.decode!
-      |> Reader.EventQueue.Broadcast.notify(topic, offset)
+      %Message{
+        value: value |> Avrolixr.Codec.decode!,
+        topic: topic,
+        offset: offset,
+        partition: partition,
+      }
+      |> Reader.EventQueue.Broadcast.notify
     rescue
       error -> Logger.error "Could not decode message #{inspect error}"
     end

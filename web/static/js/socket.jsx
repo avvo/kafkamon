@@ -156,16 +156,21 @@ let MessageList = React.createClass({
 
 let Message = React.createClass({
   getInitialState() {
-    let {event, ...message} = this.props.data.message
+    let {event, ...message} = this.props.data.value
     return {
       event: event,
       message: message,
+      meta: {
+        partition: this.props.data.partition,
+        offset: this.props.data.offset,
+        topic: this.props.data.topic,
+      }
     }
   },
   render() {
     return (
       <div className="messageBlock">
-        <Event event={this.state.event}/>
+        <Event meta={this.state.meta} event={this.state.event}/>
         <div className="message"> {JSON.stringify(this.state.message)}</div>
       </div>
     )
@@ -177,6 +182,10 @@ let Event = React.createClass({
     return (
       <div className="event">
         <Timestamp timestamp={this.props.event.timestamp}/>
+        <span className="key">
+          <span className="topic">{this.props.meta.topic}</span>/<span className="partition">{this.props.meta.partition}</span>
+          #<span className="offset">{this.props.meta.offset}</span>
+        </span>
         <span className="app_id">{this.props.event.app_id}</span>
         <span className="name">{this.props.event.name}</span>
       </div>

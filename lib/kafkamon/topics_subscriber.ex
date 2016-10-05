@@ -1,6 +1,8 @@
 defmodule Kafkamon.TopicsSubscriber do
   use GenServer
 
+  alias Reader.EventQueue.Consumer.Message
+
   def start_link, do: GenServer.start_link(__MODULE__, :ok, name: __MODULE__)
 
   def init(:ok) do
@@ -31,13 +33,15 @@ defmodule Kafkamon.TopicsSubscriber do
     {:noreply, new_topics}
   end
 
-  def handle_info({:message, topic, message, offset}, state) do
-    Kafkamon.Endpoint.broadcast("topic:#{topic}",
+  def handle_info({:message, message = %Message{}}, state) do
+    Kafkamon.Endpoint.broadcast("topic:#{message.topic}",
       "new:message",
       %{
-        "message" => message,
-        "key" => "#{topic}:#{offset}",
-        "offset" => offset,
+        "value" => message.value,
+        "key" => "#{message.topic}/#{message.partition}##{message.offset}",
+        "partition" => message.partition,
+        "offset" => message.offset,
+        "topic" => message.topic,
       })
 
     {:noreply, state}

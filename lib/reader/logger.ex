@@ -1,6 +1,8 @@
 defmodule Reader.Logger do
   require Logger
 
+  alias Reader.EventQueue.Consumer.Message
+
   use GenServer
 
   def start_link(opts \\ []) do
@@ -41,8 +43,8 @@ defmodule Reader.Logger do
     {:noreply, state}
   end
 
-  def handle_info({:message, topic, message, offset}, state) do
-    Logger.info "[#{topic}##{offset}] #{inspect message}"
+  def handle_info({:message, message = %Message{}}, state) do
+    Logger.info "[#{message.topic}/#{message.partition}##{message.offset}] #{inspect message.value}"
     {:noreply, state}
   end
 

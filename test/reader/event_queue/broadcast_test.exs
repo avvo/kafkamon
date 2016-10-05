@@ -2,20 +2,18 @@ defmodule Reader.EventQueue.BroadcastTest do
   use ExUnit.Case, async: true
 
   alias Reader.EventQueue.Broadcast
+  alias Reader.EventQueue.Consumer.Message
 
-  test "if I subscribe, I'll get messages when notified" do
-    Broadcast.subscribe("foo")
-    Broadcast.notify("message", "foo", 12)
-    assert_received {:message, "foo", "message", 12}
-  end
+  @message %Message{value: "message", topic: "foo", offset: 12, partition: 3}
 
   test "if I unsubscribe, I'll stop receiving messages" do
     Broadcast.subscribe("foo")
-    Broadcast.notify("message", "foo", 12)
-    assert_received {:message, "foo", "message", 12}
+    Broadcast.notify(@message)
+    assert_received {:message, @message}
 
     Broadcast.unsubscribe("foo")
-    Broadcast.notify("new message", "foo", 13)
-    refute_received {:message, "foo", "new message", 13}
+    new_message = %{@message | offset: 13}
+    Broadcast.notify(new_message)
+    refute_received {:message, ^new_message}
   end
 end

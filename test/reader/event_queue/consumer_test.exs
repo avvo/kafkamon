@@ -2,12 +2,13 @@ defmodule Reader.EventQueue.ConsumerTest do
   use ExUnit.Case, async: true
 
   alias Reader.EventQueue.{Broadcast,Consumer}
+  alias Reader.EventQueue.Consumer.Message
 
   setup do
     topic = "gandalf"
 
     {:ok, kafka} = Kafka.Mock.start_link
-    {:ok, consumer} = Consumer.start_link(topic, [])
+    {:ok, consumer} = Consumer.start_link(topic, 0, [])
 
     schema_path = "test/data/AvvoProAdded.avsc"
     {:ok, schema_json} = File.read(schema_path)
@@ -36,6 +37,7 @@ defmodule Reader.EventQueue.ConsumerTest do
   } do
     Broadcast.subscribe(topic)
     Kafka.Mock.send_message(consumer, topic, message, 0)
-    assert_receive {:message, ^topic, ^v_canonical, 0}
+    expected_message = %Message{topic: topic, value: v_canonical, offset: 0, partition: 0}
+    assert_receive {:message, ^expected_message}
   end
 end

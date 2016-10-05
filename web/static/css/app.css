@@ -9,9 +9,13 @@
   margin: 3px;
 }
 
-.timestamp, .app_id, .name, .message { padding: 3px; }
+.timestamp, .key, .app_id, .name, .message { padding: 3px; }
 
 .timestamp { color: #00447B; }
+.key { color: #808080; }
+.key .topic { color: #F27760; }
+.key .partition { color: #4D4D4D; }
+.key .offset { color: #008CC9; }
 .app_id { color: #00B7AF; }
 .name { color: #52A304; }
 .message {
