@@ -45,7 +45,7 @@ header {
 .page-content {
   position: absolute;
   left: 240px;
-  width: calc(100% - 160px);
+  width: calc(100% - 240px);
   overflow-x: auto;
   overflow-y: scroll;
 }
