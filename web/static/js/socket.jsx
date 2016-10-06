@@ -4,6 +4,9 @@
 // To use Phoenix channels, the first step is to import Socket
 // and connect at the socket path in "lib/my_app/endpoint.ex":
 import {Socket} from "phoenix"
+import React from "react"
+import ReactDOM from "react-dom"
+import Toggle from "react-toggle"
 
 let socket = new Socket("/socket", {params: {token: window.userToken}})
 
@@ -59,11 +62,9 @@ let Main = React.createClass({
   getInitialState() {
     return {
       topics: [],
-      activeTopic: "",
+      activeChannels: {},
       messages: [],
       topicsChannel: socket.channel("topics", {}),
-      activeChannel: null,
-      currentOffset: null
     }
   },
   componentDidMount() {
@@ -80,28 +81,40 @@ let Main = React.createClass({
       .receive("error", resp => { console.log(`Unable to join '${channel.topic}'`, resp) })
     channel.on("new:message", message => {
       this.setState({
-        messages: this.state.messages.concat([message]),
-        currentOffset: message.offset
+        messages: this.state.messages.concat([message])
       })
     })
   },
-  handleTopicLinkClick(topic) {
-    if (this.state.activeChannel) {
-      this.state.activeChannel.leave()
-        .receive("ok", resp => { console.log(`Left '${this.state.activeChannel.topic}' successfully`, resp) })
+  handleTopicChange(topic, event) {
+    if (event.target.checked) {
+      let newChannel = {}
+      newChannel[topic] = socket.channel(`topic:${topic}`)
+
+      this.setState({
+        activeChannels: Object.assign(this.state.activeChannels, newChannel),
+      })
+
+      this.configureChannel(newChannel[topic])
+    } else if (this.state.activeChannels[topic]) {
+      this.state.activeChannels[topic].leave()
+        .receive("ok", resp => { console.log(`Left '${topic}' successfully`, resp) })
+
+      let removeChannel = {}
+      removeChannel[topic] = undefined
+
+      this.setState({
+        activeChannels: Object.assign(this.state.activeChannels, removeChannel),
+      })
     }
-    let channel = socket.channel(`topic:${topic}`)
-    this.setState({activeTopic: topic, activeChannel: channel, messages: []})
-    this.configureChannel(channel)
   },
   render() {
     return(
       <div className="page-container">
         <div className="page-left">
-          <TopicList topics={this.state.topics} onTopicLinkClick={this.handleTopicLinkClick}/>
+          <TopicList topics={this.state.topics} onTopicChange={this.handleTopicChange}/>
         </div>
         <div className="page-content">
-          <Messages topic={this.state.activeTopic} messages={this.state.messages} currentOffset={this.state.currentOffset}/>
+          <Messages topic={this.state.activeTopic} messages={this.state.messages}/>
         </div>
       </div>
     )
@@ -113,7 +126,7 @@ let TopicList = React.createClass({
     return(
       <div>
         {this.props.topics.map(topic => {
-          return <div key={topic}><TopicLink onClick={this.props.onTopicLinkClick} name={topic} /></div>
+          return <div key={topic}><TopicLink onChange={this.props.onTopicChange} name={topic} /></div>
         })}
       </div>
     )
@@ -121,12 +134,15 @@ let TopicList = React.createClass({
 })
 
 let TopicLink = React.createClass({
-  handleClick() {
-    this.props.onClick(this.props.name)
+  handleChange(event) {
+    this.props.onChange(this.props.name, event)
   },
   render() {
     return(
-      <a style={{cursor: "pointer"}} onClick={this.handleClick}>{this.props.name}</a>
+      <label className="topic-label">
+        <Toggle onChange={this.handleChange} />
+        <span style={{cursor: "pointer"}}>{this.props.name}</span>
+      </label>
     )
   }
 })
@@ -135,7 +151,6 @@ let Messages = React.createClass({
   render() {
     return(
       <div>
-        <div>Welcome to the '{this.props.topic}' topic, the current offset is {this.props.currentOffset}</div>
         <MessageList messages={this.props.messages}/>
       </div>
     )
