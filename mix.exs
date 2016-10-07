@@ -37,7 +37,6 @@ defmodule Kafkamon.Mixfile do
       :phoenix_slime,
 
       :conform,
-      :conform_exrm,
       :gproc,
       :logger_file_backend,
 
@@ -57,10 +56,8 @@ defmodule Kafkamon.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:exrm, "~> 1.0", override: true},
+      {:distillery, "~> 0.10", override: true},
       {:conform, "~> 2.1", override: true},
-      {:conform_exrm, "~> 1.0"},
-      {:edib, "~> 0.9.0", only: :dev},
 
       {:xmerl, github: "otphub/xmerl", manager: :rebar},
       {:avrolixr, ">= 0.1.3"},

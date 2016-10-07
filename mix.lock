@@ -5,6 +5,7 @@
   "conform_exrm": {:hex, :conform_exrm, "1.0.0", "68d5923a74dad4169b51454d723d08ca1644b6a6deaf64eccd509fd084cd1343", [:mix], [{:conform, "> 0.0.0", [hex: :conform, optional: false]}, {:exrm, "> 0.0.0", [hex: :exrm, optional: false]}]},
   "cowboy": {:hex, :cowboy, "1.0.4", "a324a8df9f2316c833a470d918aaf73ae894278b8aa6226ce7a9bf699388f878", [:rebar, :make], [{:cowlib, "~> 1.0.0", [hex: :cowlib, optional: false]}, {:ranch, "~> 1.0", [hex: :ranch, optional: false]}]},
   "cowlib": {:hex, :cowlib, "1.0.2", "9d769a1d062c9c3ac753096f868ca121e2730b9a377de23dec0f7e08b1df84ee", [:make], []},
+  "distillery": {:hex, :distillery, "0.10.0", "4404b8e7b524de3649b3135a39921ace31f0f6216bba51964c836e83b29efe94", [:mix], []},
   "edib": {:hex, :edib, "0.9.0", "ebb918f958770a04c1b5e10c293a74bffb2d24cec730e231f8a6fbef066a08e4", [:mix], []},
   "erlavro": {:git, "https://github.com/avvo/erlavro.git", "fb7c7f0b2784468edeea0961984247242097aee5", []},
   "erlware_commons": {:hex, :erlware_commons, "0.21.0", "a04433071ad7d112edefc75ac77719dd3e6753e697ac09428fc83d7564b80b15", [:rebar3], [{:cf, "0.2.1", [hex: :cf, optional: false]}]},
