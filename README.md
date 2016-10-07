@@ -26,3 +26,31 @@ iex --name console@127.0.0.1 --cookie kafkamon --remsh kafkamon@127.0.0.1
 ```
 KafkaEx.produce "users", 0, Avrolixr.Codec.encode!(%{event: %{app_id: "a", name: "n", timestamp: 0}, lawyer_id: 0}, File.read!("test/data/AvvoProAdded.avsc"), 'AvvoEvent.AvvoProAdded')
 ```
+
+## Releasing
+
+Using **edib** building a docker image is super great! Just run
+`./bin/build.sh` and then `./bin/publish.sh` to publish.
+
+Obviously publishing only works if you have rights ;)
+
+To use, you can run with docker:
+
+```
+docker run --rm \
+-e "PORT=4000" \
+-e "KAFKA_HOSTS=172.17.0.1:9092" \
+-e "KAFKAMON_HOST=localhost" \
+-e "KAFKAMON_PORT=4000" \
+-p 4000:4000 \
+dplummer1avvo/kafkamon:latest
+```
+
+* `PORT` is the port phoenix listens to inside the container
+* `KAFKA_HOSTS` is a comma-separated list of kafka host:port pairs.
+* `KAFKAMON_HOST` is the name you use in the browser to connect to the server.
+  This is important for websockets/javascript/CORS security.
+* `KAFKAMON_PORT` is the public port you use in your browser to connect to the
+  server. Just like `KAFKAMON_HOST` its for security.
+* `-p internal:external` is the docker port exposing flag. It exposes the
+  internal phoenix port to the external browser world.
