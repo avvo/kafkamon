@@ -71,7 +71,7 @@ See the moduledoc for `Conform.Schema.Validator` for more details and examples.
     "kafka_ex.sync_timeout": [
       commented: false,
       datatype: :integer,
-      default: 3000,
+      default: 8000,
       doc: "Provide documentation for kafka_ex.sync_timeout here.",
       hidden: false,
       to: "kafka_ex.sync_timeout"
