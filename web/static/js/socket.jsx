@@ -82,7 +82,7 @@ let Main = React.createClass({
 
     channel.on("new:message", message => {
       this.setState({
-        messages: this.state.messages.slice(-99).concat([message])
+        messages: this.state.messages.concat([message]).slice(-100)
       })
     })
 

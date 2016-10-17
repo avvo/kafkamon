@@ -58,11 +58,8 @@ defmodule Reader.EventQueue.Consumer do
 
     %{partitions: [%{last_offset: last_offset, message_set: messages}]} = response
 
-    first_offset = (last_offset || 0) - length(messages) + 1
-
     messages
-    |> Enum.with_index
-    |> Enum.each(fn {%KafkaEx.Protocol.Fetch.Message{offset: offset, value: value}, index} ->
+    |> Enum.each(fn %KafkaEx.Protocol.Fetch.Message{offset: offset, value: value} ->
       broadcast_message(state.topic_name, state.partition_number, offset, value)
     end)
 

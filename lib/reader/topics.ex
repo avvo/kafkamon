@@ -70,8 +70,4 @@ defmodule Reader.Topics do
       end)
     end
   end
-
-  defp consumer_group do
-    Application.get_env(:kafka_ex, :consumer_group)
-  end
 end

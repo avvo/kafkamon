@@ -16,10 +16,7 @@ defmodule Reader.EventQueue.Supervisor do
 
   def start_child(name \\ __MODULE__, topic, partition_number) do
     with {:ok, brokers} <- KafkaImpl.Util.kafka_brokers(),
-         {:ok, pid} <- Supervisor.start_child(name, [
-           %State{topic_name: topic, partition_number: partition_number, brokers: brokers},
-           [name: via(name, topic, partition_number)]
-         ]) do
+         {:ok, pid} <- do_start_child(name, topic, partition_number, brokers) do
       {:ok, pid}
     else
       {:error, {:already_started, pid}} ->
@@ -34,12 +31,22 @@ defmodule Reader.EventQueue.Supervisor do
   end
 
   def terminate_child(name \\ __MODULE__, topic, partition_number) do
-    Supervisor.terminate_child(name, child_name(name, topic, partition_number) |> :gproc.lookup_pid)
-  rescue
-    ArgumentError -> Logger.warn "Child already terminated for #{topic} #{partition_number}"
+    Supervisor.terminate_child(name, child_name(topic, partition_number) |> Process.whereis)
   end
 
-  defp child_name(name, topic, partition_number), do: {:n, :l, {name, topic, partition_number}}
-  defp via(name, topic, partition_number), do: {:via, :gproc, child_name(name, topic, partition_number)}
+  defp child_name(topic, partition_number) do
+    [__MODULE__, topic, partition_number] |> Enum.join("_") |> String.to_atom
+  end
+
+  defp do_start_child(name, topic, partition_number, brokers) do
+    child_name = child_name(topic, partition_number)
+    case child_name |> Process.whereis do
+      nil -> Supervisor.start_child(name, [
+               %State{topic_name: topic, partition_number: partition_number, brokers: brokers},
+               [name: child_name]
+             ])
+      pid when is_pid(pid) -> {:ok, pid}
+    end
+  end
 
 end

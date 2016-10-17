@@ -7,6 +7,7 @@ defmodule Kafkamon do
     import Supervisor.Spec
 
     [
+      supervisor(Phoenix.PubSub.PG2, [KafkamonInternal, [name: KafkamonInternal]]),
       supervisor(Reader.Supervisor, []),
       supervisor(Kafkamon.Endpoint, []),
       worker(Kafkamon.TopicsSubscriber, []),

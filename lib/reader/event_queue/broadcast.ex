@@ -1,13 +1,14 @@
 defmodule Reader.EventQueue.Broadcast do
+  alias Phoenix.PubSub
   alias Reader.EventQueue.Consumer.Message
 
-  def subscribe(topic), do: topic |> key() |> :gproc.reg()
+  def subscribe(topic), do: PubSub.subscribe KafkamonInternal, pubsub_topic(topic)
 
-  def unsubscribe(topic), do: topic |> key() |> :gproc.unreg()
+  def unsubscribe(topic), do: PubSub.unsubscribe KafkamonInternal, pubsub_topic(topic)
 
   def notify(message = %Message{}) do
-    message.topic |> key() |> :gproc.send({:message, message})
+    PubSub.broadcast KafkamonInternal, pubsub_topic(message.topic), {:message, message}
   end
 
-  defp key(topic), do: {:p, :l, {__MODULE__, topic}}
+  defp pubsub_topic(topic), do: "messages_#{topic}"
 end

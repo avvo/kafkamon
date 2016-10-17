@@ -37,7 +37,6 @@ defmodule Kafkamon.Mixfile do
       :phoenix_slime,
 
       :conform,
-      :gproc,
       :logger_file_backend,
 
       :avrolixr,
@@ -64,7 +63,6 @@ defmodule Kafkamon.Mixfile do
       {:avrolixr, ">= 0.1.3"},
       {:erlavro, github: "avvo/erlavro", override: true},
       {:kafka_ex, "~> 0.5.0"},
-      {:gproc, "~> 0.5.0"},
       {:logger_file_backend, "~> 0.0"},
       {:progress_bar, "> 0.0.0", only: [:test, :dev]},
       {:junit_formatter, "~> 1.1.0", only: :test},
