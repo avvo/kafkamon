@@ -44,6 +44,7 @@ defmodule Kafkamon.Mixfile do
       :erlavro,
       :kafka_ex,
       :xmerl,
+      :kafka_impl,
     ]
   end
 
@@ -67,6 +68,7 @@ defmodule Kafkamon.Mixfile do
       {:logger_file_backend, "~> 0.0"},
       {:progress_bar, "> 0.0.0", only: [:test, :dev]},
       {:junit_formatter, "~> 1.1.0", only: :test},
+      {:kafka_impl, github: "avvo/kafka_impl"},
 
       {:phoenix, "~> 1.2.0"},
       {:phoenix_pubsub, "~> 1.0"},

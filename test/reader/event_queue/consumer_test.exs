@@ -2,13 +2,15 @@ defmodule Reader.EventQueue.ConsumerTest do
   use ExUnit.Case, async: true
 
   alias Reader.EventQueue.{Broadcast,Consumer}
-  alias Reader.EventQueue.Consumer.Message
+  alias Reader.EventQueue.Consumer.{State,Message}
+  alias KafkaImpl.KafkaMock
 
   setup do
     topic = "gandalf"
 
-    {:ok, kafka} = Kafka.Mock.start_link
-    {:ok, consumer} = Consumer.start_link(topic, 0, [])
+    Broadcast.subscribe(topic)
+    {:ok, kafka} = KafkaMock.start_link
+    {:ok, consumer} = Consumer.start_link(%State{topic_name: topic, partition_number: 0})
 
     schema_path = "test/data/AvvoProAdded.avsc"
     {:ok, schema_json} = File.read(schema_path)
@@ -35,8 +37,7 @@ defmodule Reader.EventQueue.ConsumerTest do
     message: message,
     v_canonical: v_canonical
   } do
-    Broadcast.subscribe(topic)
-    Kafka.Mock.send_message(consumer, topic, message, 0)
+    KafkaMock.send_message(consumer, {topic, 0, message, 0})
     expected_message = %Message{topic: topic, value: v_canonical, offset: 0, partition: 0}
     assert_receive {:message, ^expected_message}
   end

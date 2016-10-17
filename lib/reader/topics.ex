@@ -60,11 +60,18 @@ defmodule Reader.Topics do
   end
 
   defp topics() do
-    Kafka.metadata.topic_metadatas
-    |> Enum.reject(&(String.starts_with?(&1.topic, "_")))
-    |> Enum.sort_by(&(&1.topic))
-    |> Enum.map(fn topic_metadata ->
-      {topic_metadata.topic, topic_metadata.partition_metadatas |> length}
-    end)
+    with {:ok, brokers} <- KafkaImpl.Util.kafka_brokers(),
+         {:ok, pid} <- KafkaImpl.create_no_name_worker(brokers, :no_consumer_group) do
+      KafkaImpl.metadata(worker_name: pid).topic_metadatas
+      |> Enum.reject(&(String.starts_with?(&1.topic, "_")))
+      |> Enum.sort_by(&(&1.topic))
+      |> Enum.map(fn topic_metadata ->
+        {topic_metadata.topic, topic_metadata.partition_metadatas |> length}
+      end)
+    end
+  end
+
+  defp consumer_group do
+    Application.get_env(:kafka_ex, :consumer_group)
   end
 end

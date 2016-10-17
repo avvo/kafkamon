@@ -3,9 +3,10 @@ defmodule Reader.EventQueue.ForemanTest do
   import ExUnit.CaptureLog
 
   alias Reader.EventQueue.Foreman
+  alias KafkaImpl.KafkaMock
 
   setup do
-    {:ok, _kafka_mock} = Kafka.Mock.start_link
+    {:ok, _kafka_mock} = KafkaMock.start_link
     {:ok, eqs} = Reader.EventQueue.Supervisor.start_link
     {:ok, foreman} = Foreman.start_link(supervisor: eqs, topic_subscribe: false)
     {:ok, eqs: eqs, foreman: foreman}

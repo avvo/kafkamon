@@ -44,13 +44,13 @@ defmodule Reader.EventQueue.Foreman do
 
   defp topic_added(supervisor, {topic, partitions}) do
     for n <- 1..partitions do
-      Reader.EventQueue.Supervisor.start_child(supervisor, topic, n)
+      Reader.EventQueue.Supervisor.start_child(supervisor, topic, n - 1)
     end
   end
 
   def topic_removed(supervisor, {topic, partitions}) do
     for n <- 1..partitions do
-      Reader.EventQueue.Supervisor.terminate_child(supervisor, topic, n)
+      Reader.EventQueue.Supervisor.terminate_child(supervisor, topic, n - 1)
     end
   end
 end

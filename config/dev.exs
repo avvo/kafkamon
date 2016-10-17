@@ -34,13 +34,3 @@ config :logger, level: :info
 # Set a higher stacktrace during development. Avoid configuring such
 # in production as building large stacktraces may be expensive.
 config :phoenix, :stacktrace_depth, 20
-
-config :kafka_ex,
-  brokers: System.get_env("KAFKA_HOSTS")
-    |> (fn
-      nil -> raise "You must define KAFKA_HOSTS."
-      x -> x
-    end).()
-    |> String.split(",")
-    |> Enum.map(fn pair -> String.split(pair, ":") |> List.to_tuple end)
-    |> Enum.map(fn {host, port} -> {host, String.to_integer(port)} end)

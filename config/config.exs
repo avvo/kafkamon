@@ -5,8 +5,8 @@
 # is restricted to this project.
 use Mix.Config
 
-config :kafkamon,
-  auto_topic_fetching: true
+config :kafkamon, auto_topic_fetching: true
+config :kafkamon, consumer_wait_ms: 500
 
 # Configures the endpoint
 config :kafkamon, Kafkamon.Endpoint,
@@ -27,7 +27,7 @@ config :kafka_ex,
   # Set this value to true if you do not want the default
   # `KafkaEx.Server` worker to start during application start-up -
   # i.e., if you want to start your own set of named workers
-  disable_default_worker: false,
+  disable_default_worker: true,
   # Timeout value, in msec, for synchronous operations (e.g., network calls)
   sync_timeout: 8000,
   # Supervision max_restarts - the maximum amount of restarts allowed in a time frame
@@ -36,7 +36,7 @@ config :kafka_ex,
   max_seconds: 60,
   kafka_version: "0.8.2"
 
-config :kafkamon, Kafka, impl: Kafka.KafkaEx
+config :kafka_impl, :impl, KafkaImpl.KafkaEx
 
 # Configures Elixir's Logger
 config :logger, :console,
