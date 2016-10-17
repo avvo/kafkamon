@@ -62,8 +62,8 @@ defmodule Reader.EventQueue.Consumer do
 
     messages
     |> Enum.with_index
-    |> Enum.each(fn {msg, index} ->
-      broadcast_message(state.topic_name, state.partition_number, first_offset + index, msg)
+    |> Enum.each(fn {%KafkaEx.Protocol.Fetch.Message{offset: offset, value: value}, index} ->
+      broadcast_message(state.topic_name, state.partition_number, offset, value)
     end)
 
     next_offset = case last_offset do

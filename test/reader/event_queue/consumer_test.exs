@@ -37,7 +37,7 @@ defmodule Reader.EventQueue.ConsumerTest do
     message: message,
     v_canonical: v_canonical
   } do
-    KafkaMock.send_message(consumer, {topic, 0, message, 0})
+    KafkaMock.send_message(consumer, {topic, 0, %KafkaEx.Protocol.Fetch.Message{offset: 0, value: message}, 0})
     expected_message = %Message{topic: topic, value: v_canonical, offset: 0, partition: 0}
     assert_receive {:message, ^expected_message}
   end
