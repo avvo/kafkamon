@@ -3,22 +3,33 @@ defmodule Kafkamon.TopicsSubscriber do
 
   alias Reader.EventQueue.Consumer.Message
 
+  @stream_wait_time_ms Application.fetch_env!(:kafkamon, :consumer_wait_ms)
+
+  defmodule State do
+    @type t :: %{
+      topics: [],
+      messages: [],
+    }
+    defstruct topics: [], messages: []
+  end
+
   def start_link, do: GenServer.start_link(__MODULE__, :ok, name: __MODULE__)
 
   def init(:ok) do
     Reader.TopicBroadcast.subscribe()
-    {:ok, []}
+    flush_later(10)
+    {:ok, %State{}}
   end
 
   def current_topics(name \\ __MODULE__) do
     GenServer.call(name, :current_topics)
   end
 
-  def handle_call(:current_topics, _from, topics) do
-    {:reply, topics, topics}
+  def handle_call(:current_topics, _from, %{topics: topics} = state) do
+    {:reply, topics, state}
   end
 
-  def handle_info({:topics, new_topic_tuples}, known_topics) do
+  def handle_info({:topics, new_topic_tuples}, %{topics: known_topics} = state) do
     new_topics = new_topic_tuples |> just_names
 
     Kafkamon.Endpoint.broadcast("topics", "change", %{
@@ -30,24 +41,39 @@ defmodule Kafkamon.TopicsSubscriber do
 
     known_topics |> Enum.reject(&(&1 in new_topics)) |> Enum.each(&topic_removed/1)
 
-    {:noreply, new_topics}
+    {:noreply, %{state | topics: new_topics}}
+  end
+  def handle_info({:message, message = %Message{}}, %{messages: messages} = state) do
+    {:noreply, %{state | messages: [message | messages]}}
+  end
+  def handle_info(:flush, %{messages: messages} = state) do
+    broadcast(messages)
+    flush_later()
+    {:noreply, %{state | messages: []}}
   end
 
-  def handle_info({:message, message = %Message{}}, state) do
-    Kafkamon.Endpoint.broadcast("topic:#{message.topic}",
-      "new:message",
+  def handle_info(_msg, state), do: {:noreply, state}
+
+  defp broadcast(messages) do
+    messages
+    |> Enum.reverse
+    |> Enum.map(fn message ->
       %{
         "value" => message.value,
         "key" => "#{message.topic}/#{message.partition}##{message.offset}",
         "partition" => message.partition,
         "offset" => message.offset,
         "topic" => message.topic,
-      })
-
-    {:noreply, state}
+      }
+    end)
+    |> Enum.group_by(& Map.get(&1, "topic"))
+    |> Enum.each(fn {topic, channel_messages} ->
+      Kafkamon.Endpoint.broadcast("topic:#{topic}",
+        "new:messages",
+        %{"messages" => channel_messages}
+      )
+    end)
   end
-
-  def handle_info(_msg, state), do: {:noreply, state}
 
   defp topic_added(topic) do
     Kafkamon.Endpoint.broadcast("topic:#{topic}", "subscribe", %{})
@@ -61,5 +87,9 @@ defmodule Kafkamon.TopicsSubscriber do
 
   defp just_names(topic_tuples) do
     topic_tuples |> Enum.map(& elem(&1, 0))
+  end
+
+  defp flush_later(delay \\ 0) do
+    Process.send_after self, :flush, @stream_wait_time_ms + delay
   end
 end
