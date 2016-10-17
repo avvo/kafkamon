@@ -81,7 +81,7 @@ let Main = React.createClass({
       .receive("error", resp => { console.log(`Unable to join '${channel.topic}'`, resp) })
     channel.on("new:message", message => {
       this.setState({
-        messages: this.state.messages.concat([message])
+        messages: this.state.messages.slice(-99).concat([message])
       })
     })
   },
