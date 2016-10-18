@@ -36,7 +36,6 @@ defmodule Kafkamon.Mixfile do
       :gettext,
       :phoenix_slime,
 
-      :conform,
       :logger_file_backend,
 
       :avrolixr,
@@ -57,7 +56,6 @@ defmodule Kafkamon.Mixfile do
   defp deps do
     [
       {:distillery, "~> 0.10", override: true},
-      {:conform, "~> 2.1", override: true},
 
       {:xmerl, github: "otphub/xmerl", manager: :rebar},
       {:avrolixr, ">= 0.1.3"},

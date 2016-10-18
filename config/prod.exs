@@ -15,17 +15,15 @@ config :kafkamon, Kafkamon.Endpoint,
   http: [port: {:system, "PORT"}],
   url: [host: "example.com", port: 80],
   cache_static_manifest: "priv/static/manifest.json",
+  check_origin: false,
   server: true
 
 config :logger,
   backends: [
     :console,
-    {LoggerFileBackend, :debug_log}
   ]
 
-config :logger, :debug_log,
-  path: "/var/log/kafkamon/debug.log",
-  level: :debug
+config :logger, level: :warn
 
 # ## SSL Support
 #
