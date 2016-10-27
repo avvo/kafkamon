@@ -10,9 +10,11 @@
     "babel-preset-react": "^6.11.1",
     "babel-preset-stage-2": "^6.13.0",
     "brunch": "^2.7.4",
+    "moment": "^2.15.2",
     "phoenix": "file:deps/phoenix",
     "phoenix_html": "file:deps/phoenix_html",
     "react": "^15.3.1",
+    "react-datetime": "^2.6.2",
     "react-dom": "^15.3.1",
     "react-toggle": "~2.1.1"
   },

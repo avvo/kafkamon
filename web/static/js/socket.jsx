@@ -7,6 +7,8 @@ import {Socket} from "phoenix"
 import React from "react"
 import ReactDOM from "react-dom"
 import Toggle from "react-toggle"
+import Datetime from "react-datetime"
+import moment from "moment"
 
 let socket = new Socket("/socket", {params: {token: window.userToken}})
 
@@ -121,6 +123,7 @@ let Main = React.createClass({
           <TopicList topics={this.state.topics} onTopicChange={this.handleTopicChange}/>
         </div>
         <div className="page-content">
+          <ControlBar />
           <Messages topic={this.state.activeTopic} messages={this.state.messages}/>
         </div>
       </div>
@@ -163,6 +166,45 @@ let Messages = React.createClass({
     )
   }
 })
+
+let ControlBar = React.createClass({
+  getInitialState() {
+    return {
+      timeMode: 'trail',
+      pickedTime: null
+    }
+  },
+  handleTimeModeChange(changeEvent) {
+    if (this.state.pickedTime === null) {
+      this.setState({ pickedTime: moment() })
+    }
+    this.setState({
+      timeMode: changeEvent.target.value
+    })
+  },
+  handleTimePicked(changeEvent) {
+    console.log(changeEvent)
+    this.setState({
+      pickedTime: changeEvent
+    })
+  },
+  render () {
+    return (
+      <div className="controlBar">
+        <form>
+          <label><input type="radio" name="timeMode" value="trail" checked={this.state.timeMode === 'trail'} onChange={this.handleTimeModeChange}/>Trail</label>
+          <label><input type="radio" name="timeMode" value="pick" checked={this.state.timeMode === 'pick'} onChange={this.handleTimeModeChange}/>Pick</label>
+          <Datetime
+            value={this.state.pickedTime}
+            onBlur={this.handleTimePicked}
+            viewMode='time'
+        />
+        </form>
+      </div>
+    )
+  }
+})
+            /*input={this.state.timeMode === 'pick'}*/
 
 let MessageList = React.createClass({
   render() {
