@@ -3,7 +3,7 @@ defmodule Reader.LoggerTest do
   import ExUnit.CaptureLog
 
   setup do
-    {:ok, logger} = Reader.Logger.start_link
+    {:ok, logger} = Reader.Logger.start_link topic_subscribe: false
     {:ok, logger: logger}
   end
 
