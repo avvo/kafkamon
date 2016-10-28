@@ -5,7 +5,8 @@ defmodule Mix.Tasks.Kafkamon.TestProducer do
   @shortdoc "Write as many events as fast as we can to Kafka"
 
   def run(_args) do
-    KafkaEx.start nil, nil
+    {:ok, brokers} = KafkaImpl.Util.kafka_brokers()
+    {:ok, worker} = KafkaImpl.create_no_name_worker(brokers, :no_consumer_group)
 
     schema_path = "test/data/AvvoProAdded.avsc"
     {:ok, schema_json} = File.read(schema_path)
@@ -19,14 +20,14 @@ defmodule Mix.Tasks.Kafkamon.TestProducer do
       interval: 100,
       frames: :braille
     ], fn ->
-      produce("test", message, 50_000)
+      produce("test", message, 50, worker)
     end
   end
 
-  def produce(_topic, _message, 0), do: nil
+  def produce(_topic, _message, 0, _worker), do: nil
 
-  def produce(topic, message, iterations_left) do
-    KafkaEx.produce topic, 0, message
-    produce(topic, message, iterations_left - 1)
+  def produce(topic, message, iterations_left, worker) do
+    KafkaEx.produce topic, 0, message, worker_name: worker
+    produce(topic, message, iterations_left - 1, worker)
   end
 end

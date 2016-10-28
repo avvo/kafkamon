@@ -43,6 +43,7 @@ defmodule Kafkamon.Mixfile do
       :kafka_ex,
       :xmerl,
       :kafka_impl,
+      :timex,
     ]
   end
 
@@ -73,6 +74,7 @@ defmodule Kafkamon.Mixfile do
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
       {:phoenix_slime, "~> 0.7.0"},
+      {:timex, "~> 3.1"},
     ]
   end
 end

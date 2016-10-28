@@ -37,7 +37,7 @@ defmodule Reader.EventQueue.Consumer do
     end
   end
 
-  @spec fetch_at(pid|atom, DateTime.t) :: {:ok, list}
+  @spec fetch_at(pid|atom, DateTime.t) :: {:ok, list} | {:error, any}
   def fetch_at(consumer, datetime = %DateTime{}) do
     GenServer.call(consumer, {:fetch_at, datetime})
   end
@@ -49,6 +49,9 @@ defmodule Reader.EventQueue.Consumer do
 
       {:reply, {:ok, wrapped}, state}
     else
+      :no_offset ->
+        Logger.warn "Topic #{state.topic_name}##{state.partition_number} had no offset"
+        {:reply, {:ok, []}, state}
       error -> 
       Logger.warn "Error fetching messages at #{inspect datetime} for #{state.topic_name}##{state.partition_number}: #{inspect error}"
       {:reply, {:error, error}, state}
@@ -144,9 +147,12 @@ defmodule Reader.EventQueue.Consumer do
   end
 
   defp offset_at(erltime, state) do
+    IO.inspect {erltime, state.topic_name, state.partition_number}
     case KafkaImpl.offset(state.topic_name, state.partition_number, erltime, state.worker_pid) do
       [%KafkaEx.Protocol.Offset.Response{partition_offsets: [%{offset: [offset]}]}] ->
         {:ok, offset}
+      [%KafkaEx.Protocol.Offset.Response{partition_offsets: [%{offset: []}]}] ->
+        :no_offset
       e -> e
     end
   end

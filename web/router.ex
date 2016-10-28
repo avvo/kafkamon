@@ -19,6 +19,11 @@ defmodule Kafkamon.Router do
     get "/", PageController, :index
   end
 
+  scope "/messages", Kafkamon do
+    pipe_through :api
+    get "/", MessageController, :index
+  end
+
   # Other scopes may use custom stacks.
   # scope "/api", Kafkamon do
   #   pipe_through :api

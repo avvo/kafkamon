@@ -116,6 +116,23 @@ let Main = React.createClass({
       })
     }
   },
+  handleTimepick(datetime) {
+    let topics = Object.keys(this.state.activeChannels)
+    let self = this
+
+    if (topics.length > 0 && datetime) {
+      let request = new Request(`/messages?topics=${topics.join(",")}&pickedTime=${datetime.format()}`)
+      let headers = new Headers()
+      headers.append("Accept", "application/json")
+      fetch(request, {headers: headers}).then(resp => {
+        return resp.json()
+      }).then(resp => {
+        self.setState({
+          messages: resp.messages
+        })
+      })
+    }
+  },
   render() {
     return(
       <div className="page-container">
@@ -123,7 +140,7 @@ let Main = React.createClass({
           <TopicList topics={this.state.topics} onTopicChange={this.handleTopicChange}/>
         </div>
         <div className="page-content">
-          <ControlBar />
+          <ControlBar onTimepick={this.handleTimepick} />
           <Messages topic={this.state.activeTopic} messages={this.state.messages}/>
         </div>
       </div>
@@ -183,23 +200,24 @@ let ControlBar = React.createClass({
     })
   },
   handleTimePicked(changeEvent) {
-    console.log(changeEvent)
     this.setState({
       pickedTime: changeEvent
     })
   },
+  handleButtonClicked() {
+    console.log("click firing")
+    this.props.onTimepick(this.state.pickedTime)
+  },
   render () {
     return (
       <div className="controlBar">
-        <form>
-          <label><input type="radio" name="timeMode" value="trail" checked={this.state.timeMode === 'trail'} onChange={this.handleTimeModeChange}/>Trail</label>
-          <label><input type="radio" name="timeMode" value="pick" checked={this.state.timeMode === 'pick'} onChange={this.handleTimeModeChange}/>Pick</label>
-          <Datetime
-            value={this.state.pickedTime}
-            onBlur={this.handleTimePicked}
-            viewMode='time'
-        />
-        </form>
+        <label><input type="radio" name="timeMode" value="trail" checked={this.state.timeMode === 'trail'} onChange={this.handleTimeModeChange}/>Trail</label>
+        <label><input type="radio" name="timeMode" value="pick" checked={this.state.timeMode === 'pick'} onChange={this.handleTimeModeChange}/>Pick</label>
+        <Datetime
+          value={this.state.pickedTime}
+          onChange={this.handleTimePicked}
+          />
+        <input type="button" onClick={this.handleButtonClicked} value="Go" />
       </div>
     )
   }
