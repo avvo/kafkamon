@@ -2,6 +2,8 @@ defmodule Reader.EventQueue.Consumer do
   require Logger
   use GenServer
 
+  alias Kafkamon.Message
+
   defmodule State do
     @type t :: %{
       topic_name: String.t,
@@ -11,16 +13,6 @@ defmodule Reader.EventQueue.Consumer do
       offset: integer,
     }
     defstruct [:topic_name, :partition_number, :brokers, :worker_pid, :offset]
-  end
-
-  defmodule Message do
-    @type t :: %{
-      value: map(),
-      topic: String.t,
-      offset: integer,
-      partition: integer,
-    }
-    defstruct [:value, :topic, :offset, :partition]
   end
 
   @stream_wait_time_ms Application.fetch_env!(:kafkamon, :consumer_wait_ms)
@@ -45,33 +37,42 @@ defmodule Reader.EventQueue.Consumer do
     end
   end
 
-  def handle_info(:fetch, state) do
-    [response] = KafkaImpl.fetch(
-      state.topic_name,
-      state.partition_number,
-      [
-        offset: state.offset,
-        worker_name: state.worker_pid,
-        auto_commit: false,
-      ]
-    )
+  @spec fetch_at(pid|atom, DateTime.t) :: {:ok, list}
+  def fetch_at(consumer, datetime = %DateTime{}) do
+    GenServer.call(consumer, {:fetch_at, datetime})
+  end
 
-    %{partitions: [%{last_offset: last_offset, message_set: messages}]} = response
+  def handle_call({:fetch_at, datetime}, _from, state) do
+    with {:ok, offset} <- datetime |> DateTime.to_naive |> NaiveDateTime.to_erl |> offset_at(state),
+         {:ok, _last_offset, messages} <- fetch_messages(%{state | offset: offset}),
+         wrapped <- messages |> Enum.map(&parse_message(&1, state)) do
+
+      {:reply, {:ok, wrapped}, state}
+    else
+      error -> 
+      Logger.warn "Error fetching messages at #{inspect datetime} for #{state.topic_name}##{state.partition_number}: #{inspect error}"
+      {:reply, {:error, error}, state}
+    end
+  end
+
+  def handle_info(:stream, state) do
+    {:ok, last_offset, messages} = fetch_messages(state)
 
     messages
-    |> Enum.each(fn %KafkaEx.Protocol.Fetch.Message{offset: offset, value: value} ->
-      broadcast_message(state.topic_name, state.partition_number, offset, value)
-    end)
+    |> Enum.map(&parse_message(&1, state))
+    |> Enum.each(&broadcast/1)
 
     next_offset = case last_offset do
       nil -> state.offset
       last_offset -> last_offset + 1
     end
 
-    Process.send_after self, :fetch, @stream_wait_time_ms
+    Process.send_after self, :stream, @stream_wait_time_ms
 
     {:noreply, %{state | offset: next_offset}}
   end
+
+  def handle_info(_msg, state), do: {:noreply, state}
 
   defp latest_offset(%{offset: offset}) when is_integer(offset), do: offset
   defp latest_offset(%{topic_name: topic, partition_number: partition, worker_pid: pid}) do
@@ -83,15 +84,14 @@ defmodule Reader.EventQueue.Consumer do
     end
   end
 
-  defp broadcast_message(topic, partition, offset, value) do
-    with {:ok, decoded} <- decode(value) do
-      %Message{
+  def parse_message(message, state) do
+    with {:ok, decoded} <- decode(message.value) do
+      Message.new(
+        offset: message.offset,
+        partition: state.partition_number,
+        topic: state.topic_name,
         value: decoded,
-        topic: topic,
-        offset: offset,
-        partition: partition,
-      }
-      |> broadcast()
+      )
     end
   end
 
@@ -114,7 +114,7 @@ defmodule Reader.EventQueue.Consumer do
   end
 
   defp begin_streaming() do
-    send self, :fetch
+    send self, :stream
     :ok
   end
 
@@ -124,6 +124,30 @@ defmodule Reader.EventQueue.Consumer do
     else
       error ->
         {:error, "Could not start kafka worker: #{inspect error}"}
+    end
+  end
+
+  defp fetch_messages(%{topic_name: topic, partition_number: partition, offset: offset, worker_pid: pid}) do
+    [response] = KafkaImpl.fetch(
+      topic,
+      partition,
+      [
+        offset: offset,
+        worker_name: pid,
+        auto_commit: false,
+      ]
+    )
+
+    %{partitions: [%{last_offset: last_offset, message_set: messages}]} = response
+
+    {:ok, last_offset, messages}
+  end
+
+  defp offset_at(erltime, state) do
+    case KafkaImpl.offset(state.topic_name, state.partition_number, erltime, state.worker_pid) do
+      [%KafkaEx.Protocol.Offset.Response{partition_offsets: [%{offset: [offset]}]}] ->
+        {:ok, offset}
+      e -> e
     end
   end
 end

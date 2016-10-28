@@ -1,7 +1,7 @@
 defmodule Reader.Logger do
   require Logger
 
-  alias Reader.EventQueue.Consumer.Message
+  alias Kafkamon.Message
 
   use GenServer
 

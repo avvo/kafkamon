@@ -1,7 +1,7 @@
 defmodule Kafkamon.TopicsSubscriber do
   use GenServer
 
-  alias Reader.EventQueue.Consumer.Message
+  alias Kafkamon.Message
 
   @stream_wait_time_ms Application.fetch_env!(:kafkamon, :consumer_wait_ms)
 
@@ -57,15 +57,7 @@ defmodule Kafkamon.TopicsSubscriber do
   defp broadcast(messages) do
     messages
     |> Enum.reverse
-    |> Enum.map(fn message ->
-      %{
-        "value" => message.value,
-        "key" => "#{message.topic}/#{message.partition}##{message.offset}",
-        "partition" => message.partition,
-        "offset" => message.offset,
-        "topic" => message.topic,
-      }
-    end)
+    |> Enum.map(&Message.stringify_keys/1)
     |> Enum.group_by(& Map.get(&1, "topic"))
     |> Enum.each(fn {topic, channel_messages} ->
       Kafkamon.Endpoint.broadcast("topic:#{topic}",
