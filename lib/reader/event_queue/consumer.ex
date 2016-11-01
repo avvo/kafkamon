@@ -43,8 +43,8 @@ defmodule Reader.EventQueue.Consumer do
   end
 
   def handle_call({:fetch_at, datetime}, _from, state) do
-    with {:ok, offset} <- datetime |> DateTime.to_naive |> NaiveDateTime.to_erl |> offset_at(state),
-         {:ok, _last_offset, messages} <- fetch_messages(%{state | offset: offset}),
+    with {:ok, offset} <- datetime |> Timex.to_datetime(:utc) |> Timex.to_erl |> offset_at(state),
+         {:ok, _last_offset, messages} <- Reader.KafkaFetch.fetch_messages(%{state | offset: offset}),
          wrapped <- messages |> Enum.map(&parse_message(&1, state)) do
 
       {:reply, {:ok, wrapped}, state}
@@ -59,7 +59,7 @@ defmodule Reader.EventQueue.Consumer do
   end
 
   def handle_info(:stream, state) do
-    {:ok, last_offset, messages} = fetch_messages(state)
+    {:ok, last_offset, messages} = Reader.KafkaFetch.fetch_messages(state)
 
     messages
     |> Enum.map(&parse_message(&1, state))
@@ -88,23 +88,13 @@ defmodule Reader.EventQueue.Consumer do
   end
 
   def parse_message(message, state) do
-    with {:ok, decoded} <- decode(message.value) do
+    with {:ok, decoded} <- Reader.KafkaFetch.decode(message.value) do
       Message.new(
         offset: message.offset,
         partition: state.partition_number,
         topic: state.topic_name,
         value: decoded,
       )
-    end
-  end
-
-  defp decode(value) do
-    try do
-      value |> Avrolixr.Codec.decode
-    rescue
-      error ->
-        Logger.error "Could not decode message: #{inspect error}. Base64 encoded: #{Base.encode64(value)}"
-        :error
     end
   end
 
@@ -130,30 +120,12 @@ defmodule Reader.EventQueue.Consumer do
     end
   end
 
-  defp fetch_messages(%{topic_name: topic, partition_number: partition, offset: offset, worker_pid: pid}) do
-    [response] = KafkaImpl.fetch(
-      topic,
-      partition,
-      [
-        offset: offset,
-        worker_name: pid,
-        auto_commit: false,
-      ]
-    )
-
-    %{partitions: [%{last_offset: last_offset, message_set: messages}]} = response
-
-    {:ok, last_offset, messages}
-  end
 
   defp offset_at(erltime, state) do
-    IO.inspect {erltime, state.topic_name, state.partition_number}
-    case KafkaImpl.offset(state.topic_name, state.partition_number, erltime, state.worker_pid) do
-      [%KafkaEx.Protocol.Offset.Response{partition_offsets: [%{offset: [offset]}]}] ->
-        {:ok, offset}
-      [%KafkaEx.Protocol.Offset.Response{partition_offsets: [%{offset: []}]}] ->
-        :no_offset
-      e -> e
-    end
+    case KafkaImpl.offset(state.topic_name, state.partition_number, erltime, state.worker_pid) |> KafkaImpl.Util.extract_offset do
+      :no_offset -> :no_offset
+      {:ok, offset} -> {:ok, offset}
+      x -> x # {:error, message}
+    end |> IO.inspect
   end
 end

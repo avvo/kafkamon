@@ -1,6 +1,7 @@
 defmodule Mix.Tasks.Kafkamon.TestProducer do
   use Mix.Task
 
+  @event_type 'AvvoEvent.AvvoProAdded'
 
   @shortdoc "Write as many events as fast as we can to Kafka"
 
@@ -10,9 +11,6 @@ defmodule Mix.Tasks.Kafkamon.TestProducer do
 
     schema_path = "test/data/AvvoProAdded.avsc"
     {:ok, schema_json} = File.read(schema_path)
-    type = 'AvvoEvent.AvvoProAdded'
-    v = %{event: %{app_id: "a", name: "n", timestamp: 0}, lawyer_id: 0}
-    message = Avrolixr.Codec.encode!(v, schema_json, type)
 
     ProgressBar.render_spinner [
       text: "Producing to 'test'",
@@ -20,14 +18,19 @@ defmodule Mix.Tasks.Kafkamon.TestProducer do
       interval: 100,
       frames: :braille
     ], fn ->
-      produce("test", message, 50, worker)
+      produce("test2", 50, worker, schema_json)
     end
   end
 
-  def produce(_topic, _message, 0, _worker), do: nil
+  def produce(_topic, 0, _worker, _), do: nil
 
-  def produce(topic, message, iterations_left, worker) do
+
+  def produce(topic, iterations_left, worker, schema_json) do
+    ts = DateTime.utc_now |> DateTime.to_unix()
+    v = %{event: %{app_id: "a", name: "n", timestamp: ts}, lawyer_id: 100000 + iterations_left}
+    message = Avrolixr.Codec.encode!(v, schema_json, @event_type)
     KafkaEx.produce topic, 0, message, worker_name: worker
+    :timer.sleep 100
     produce(topic, message, iterations_left - 1, worker)
   end
 end
