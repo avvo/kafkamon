@@ -23,10 +23,8 @@ defmodule Reader.EventQueue.Supervisor do
         Logger.info("Reader.EventQueue.Supervisor already started child for #{topic}")
         {:ok, pid}
       error ->
-        Logger.error("Reader.EventQueue.Supervisor error #{topic}: #{inspect error}")
-        :timer.sleep(5)
-        System.halt(1)
-        error
+        msg = "Reader.EventQueue.Supervisor error #{topic}: #{inspect error}"
+        raise msg
     end
   end
 

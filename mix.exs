@@ -61,7 +61,7 @@ defmodule Kafkamon.Mixfile do
       {:xmerl, github: "otphub/xmerl", manager: :rebar},
       {:avrolixr, ">= 0.1.3"},
       {:erlavro, github: "avvo/erlavro", override: true},
-      {:kafka_ex, "~> 0.5.0"},
+      {:kafka_ex, "~> 0.6.0"},
       {:logger_file_backend, "~> 0.0"},
       {:progress_bar, "> 0.0.0", only: [:test, :dev]},
       {:junit_formatter, "~> 1.1.0", only: :test},

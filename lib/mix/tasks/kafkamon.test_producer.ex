@@ -13,12 +13,12 @@ defmodule Mix.Tasks.Kafkamon.TestProducer do
     {:ok, schema_json} = File.read(schema_path)
 
     ProgressBar.render_spinner [
-      text: "Producing to 'test'",
+      text: "Producing to 'users'",
       spinner_color: IO.ANSI.magenta,
       interval: 100,
       frames: :braille
     ], fn ->
-      produce("test2", 50, worker, schema_json)
+      produce("users", 50, worker, schema_json)
     end
   end
 
@@ -29,8 +29,9 @@ defmodule Mix.Tasks.Kafkamon.TestProducer do
     ts = DateTime.utc_now |> DateTime.to_unix()
     v = %{event: %{app_id: "a", name: "n", timestamp: ts}, lawyer_id: 100000 + iterations_left}
     message = Avrolixr.Codec.encode!(v, schema_json, @event_type)
-    KafkaEx.produce topic, 0, message, worker_name: worker
+    partition = rem(iterations_left, 12)
+    KafkaEx.produce topic, partition, message, worker_name: worker
     :timer.sleep 100
-    produce(topic, message, iterations_left - 1, worker)
+    produce(topic, iterations_left - 1, worker, schema_json)
   end
 end
