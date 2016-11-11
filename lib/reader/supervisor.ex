@@ -5,6 +5,7 @@ defmodule Reader.Supervisor do
 
   def init(:ok) do
     [
+      Reader.KafkaPoolWorker.poolboy_worker_spec,
       supervisor(Reader.EventQueue.Supervisor, [[name: Reader.EventQueue.Supervisor]]),
       worker(Reader.EventQueue.Foreman, [[name: Reader.EventQueue.Foreman]]),
       worker(Reader.Logger, [[name: Reader.Logger]]),

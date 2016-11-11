@@ -15,8 +15,7 @@ defmodule Reader.EventQueue.Supervisor do
   end
 
   def start_child(name \\ __MODULE__, topic, partition_number) do
-    with {:ok, brokers} <- KafkaImpl.Util.kafka_brokers(),
-         {:ok, pid} <- do_start_child(name, topic, partition_number, brokers) do
+    with {:ok, pid} <- do_start_child(name, topic, partition_number) do
       {:ok, pid}
     else
       {:error, {:already_started, pid}} ->
@@ -38,11 +37,11 @@ defmodule Reader.EventQueue.Supervisor do
     [__MODULE__, topic, partition_number] |> Enum.join("_") |> String.to_atom
   end
 
-  defp do_start_child(name, topic, partition_number, brokers) do
+  defp do_start_child(name, topic, partition_number) do
     child_name = child_name(topic, partition_number)
     case child_name |> Process.whereis do
       nil -> Supervisor.start_child(name, [
-               %State{topic_name: topic, partition_number: partition_number, brokers: brokers},
+               %State{topic_name: topic, partition_number: partition_number},
                [name: child_name]
              ])
       pid when is_pid(pid) -> {:ok, pid}

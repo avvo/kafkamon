@@ -41,7 +41,7 @@ defmodule Reader.Topics do
   end
 
   def handle_cast(:fetch_topics, old_topics) do
-    new_topics = topics()
+    new_topics = Reader.KafkaPoolWorker.topics
 
     if new_topics != old_topics do
       Reader.TopicBroadcast.notify(new_topics)
@@ -57,17 +57,5 @@ defmodule Reader.Topics do
 
   defp fetch_topics_later(delay \\ @refresh_time_in_ms) do
     Process.send_after(self(), :fetch_topics_later, delay)
-  end
-
-  defp topics() do
-    with {:ok, brokers} <- KafkaImpl.Util.kafka_brokers(),
-         {:ok, pid} <- KafkaImpl.create_no_name_worker(brokers, :no_consumer_group) do
-      KafkaImpl.metadata(worker_name: pid).topic_metadatas
-      |> Enum.reject(&(String.starts_with?(&1.topic, "_")))
-      |> Enum.sort_by(&(&1.topic))
-      |> Enum.map(fn topic_metadata ->
-        {topic_metadata.topic, topic_metadata.partition_metadatas |> length}
-      end)
-    end
   end
 end

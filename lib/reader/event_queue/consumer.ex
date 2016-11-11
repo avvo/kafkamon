@@ -6,11 +6,9 @@ defmodule Reader.EventQueue.Consumer do
     @type t :: %{
       topic_name: String.t,
       partition_number: integer,
-      brokers: KafkaEx.uri(),
-      worker_pid: pid,
       offset: integer,
     }
-    defstruct [:topic_name, :partition_number, :brokers, :worker_pid, :offset]
+    defstruct [:topic_name, :partition_number, :offset]
   end
 
   defmodule Message do
@@ -31,11 +29,9 @@ defmodule Reader.EventQueue.Consumer do
   end
 
   def init(state) do
-    with {:ok, worker_pid} <- create_worker(state.brokers),
-         state             <- state |> Map.put(:worker_pid, worker_pid),
-         offset            <- latest_offset(state),
-         state             <- state |> Map.put(:offset, offset),
-         :ok               <- begin_streaming()
+    with offset <- latest_offset(state),
+         state  <- state |> Map.put(:offset, offset),
+         :ok    <- begin_streaming()
     do
       {:ok, state}
     else
@@ -46,15 +42,7 @@ defmodule Reader.EventQueue.Consumer do
   end
 
   def handle_info(:fetch, state) do
-    [response] = KafkaImpl.fetch(
-      state.topic_name,
-      state.partition_number,
-      [
-        offset: state.offset,
-        worker_name: state.worker_pid,
-        auto_commit: false,
-      ]
-    )
+    {:ok, response} = Reader.KafkaPoolWorker.fetch(state.topic_name, state.partition_number, state.offset)
 
     %{partitions: [%{last_offset: last_offset, message_set: messages}]} = response
 
@@ -74,13 +62,8 @@ defmodule Reader.EventQueue.Consumer do
   end
 
   defp latest_offset(%{offset: offset}) when is_integer(offset), do: offset
-  defp latest_offset(%{topic_name: topic, partition_number: partition, worker_pid: pid}) do
-    case KafkaImpl.latest_offset(topic, partition, pid) |> KafkaImpl.Util.extract_offset do
-      {:ok, offset} -> offset
-      {:error, msg} ->
-        Logger.error msg
-        0
-    end
+  defp latest_offset(%{topic_name: topic, partition_number: partition}) do
+    Reader.KafkaPoolWorker.latest_offset(topic, partition)
   end
 
   defp broadcast_message(topic, partition, offset, value) do
@@ -116,14 +99,5 @@ defmodule Reader.EventQueue.Consumer do
   defp begin_streaming() do
     send self, :fetch
     :ok
-  end
-
-  defp create_worker(brokers) do
-    with {:ok, pid} <- KafkaImpl.create_no_name_worker(brokers, :no_consumer_group) do
-      {:ok, pid}
-    else
-      error ->
-        {:error, "Could not start kafka worker: #{inspect error}"}
-    end
   end
 end
