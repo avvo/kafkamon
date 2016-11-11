@@ -7,7 +7,7 @@ use Mix.Config
 # watchers to your application. For example, we use it
 # with brunch.io to recompile .js and .css sources.
 config :kafkamon, Kafkamon.Endpoint,
-  http: [port: 4001],
+  http: [port: 4000],
   debug_errors: true,
   code_reloader: true,
   check_origin: false,
@@ -29,7 +29,7 @@ config :kafkamon, Kafkamon.Endpoint,
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"
 
-config :logger, level: :info
+config :logger, level: :debug
 
 # Set a higher stacktrace during development. Avoid configuring such
 # in production as building large stacktraces may be expensive.

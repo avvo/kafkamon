@@ -7,6 +7,7 @@ use Mix.Config
 
 config :kafkamon, auto_topic_fetching: true
 config :kafkamon, consumer_wait_ms: 500
+config :kafkamon, pool_size: 12
 
 # Configures the endpoint
 config :kafkamon, Kafkamon.Endpoint,

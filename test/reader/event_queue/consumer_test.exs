@@ -12,6 +12,11 @@ defmodule Reader.EventQueue.ConsumerTest do
     {:ok, kafka} = KafkaMock.start_link
     {:ok, consumer} = Consumer.start_link(%State{topic_name: topic, partition_number: 0})
 
+    Reader.KafkaPoolWorker.send_me_worker_pid_for_test
+    worker_pid = receive do
+      {:worker_pid_for_test, pid} -> pid
+    end
+
     schema_path = "test/data/AvvoProAdded.avsc"
     {:ok, schema_json} = File.read(schema_path)
     type = 'AvvoEvent.AvvoProAdded'
@@ -28,6 +33,7 @@ defmodule Reader.EventQueue.ConsumerTest do
       message: message,
       v_canonical: v_canonical,
       topic: topic,
+      worker_pid: worker_pid,
     }
   end
 
@@ -35,9 +41,10 @@ defmodule Reader.EventQueue.ConsumerTest do
     consumer: consumer,
     topic: topic,
     message: message,
-    v_canonical: v_canonical
+    v_canonical: v_canonical,
+    worker_pid: worker_pid,
   } do
-    KafkaMock.send_message(consumer, {topic, 0, %KafkaEx.Protocol.Fetch.Message{offset: 0, value: message}, 0})
+    KafkaMock.TestHelper.send_message(worker_pid, {topic, 0, %KafkaEx.Protocol.Fetch.Message{offset: 0, value: message}, 0})
     expected_message = %Message{topic: topic, value: v_canonical, offset: 0, partition: 0}
     assert_receive {:message, ^expected_message}
   end
