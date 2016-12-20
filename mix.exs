@@ -28,22 +28,19 @@ defmodule Kafkamon.Mixfile do
 
   def applications(_) do
     [
-      :phoenix,
-      :phoenix_pubsub,
-      :phoenix_html,
+      :avrolixr,
       :cowboy,
-      :logger,
+      :erlavro,
       :gettext,
+      :kafka_ex,
+      :kafka_impl,
+      :logger,
+      :logger_file_backend,
+      :phoenix,
+      :phoenix_html,
+      :phoenix_pubsub,
       :phoenix_slime,
       :poolboy,
-
-      :logger_file_backend,
-
-      :avrolixr,
-      :erlavro,
-      :kafka_ex,
-      #:xmerl,
-      :kafka_impl,
     ]
   end
 
@@ -56,25 +53,23 @@ defmodule Kafkamon.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:distillery, "~> 0.10", override: true},
-
-      #{:xmerl, github: "otphub/xmerl", manager: :rebar},
       {:avrolixr, ">= 0.1.3"},
+      {:cowboy, "~> 1.0"},
+      {:distillery, "~> 0.10", override: true},
+      {:edib, "~> 0.9", only: :dev},
       {:erlavro, github: "avvo/erlavro", override: true},
-      {:kafka_ex, "~> 0.6.0"},
-      {:logger_file_backend, "~> 0.0"},
-      {:progress_bar, "> 0.0.0", only: [:test, :dev]},
+      {:gettext, "~> 0.11"},
       {:junit_formatter, "~> 1.1.0", only: :test},
+      {:kafka_ex, "~> 0.6.0"},
       {:kafka_impl, "~> 0.1"},
-      {:poolboy, "~> 1.5"},
-
+      {:logger_file_backend, "~> 0.0"},
       {:phoenix, "~> 1.2.0"},
-      {:phoenix_pubsub, "~> 1.0"},
       {:phoenix_html, "~> 2.6"},
       {:phoenix_live_reload, "~> 1.0", only: :dev},
-      {:gettext, "~> 0.11"},
-      {:cowboy, "~> 1.0"},
+      {:phoenix_pubsub, "~> 1.0"},
       {:phoenix_slime, "~> 0.7.0"},
+      {:poolboy, "~> 1.5"},
+      {:progress_bar, "> 0.0.0", only: [:test, :dev]},
     ]
   end
 end
