@@ -42,7 +42,7 @@ defmodule Kafkamon.Mixfile do
       :avrolixr,
       :erlavro,
       :kafka_ex,
-      :xmerl,
+      #:xmerl,
       :kafka_impl,
     ]
   end
@@ -58,7 +58,7 @@ defmodule Kafkamon.Mixfile do
     [
       {:distillery, "~> 0.10", override: true},
 
-      {:xmerl, github: "otphub/xmerl", manager: :rebar},
+      #{:xmerl, github: "otphub/xmerl", manager: :rebar},
       {:avrolixr, ">= 0.1.3"},
       {:erlavro, github: "avvo/erlavro", override: true},
       {:kafka_ex, "~> 0.6.0"},
