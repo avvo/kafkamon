@@ -30,7 +30,11 @@ defmodule Reader.EventQueue.Supervisor do
   end
 
   def terminate_child(name \\ __MODULE__, topic, partition_number) do
-    Supervisor.terminate_child(name, child_name(topic, partition_number) |> Process.whereis)
+    case child_name(topic, partition_number) |> Process.whereis do
+      pid when is_pid(pid) -> Supervisor.terminate_child(name, pid)
+      _ ->
+        Logger.debug "No child for #{topic}##{partition_number}, nothing to terminate"
+    end
   end
 
   defp child_name(topic, partition_number) do

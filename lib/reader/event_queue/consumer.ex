@@ -33,6 +33,7 @@ defmodule Reader.EventQueue.Consumer do
          state  <- state |> Map.put(:offset, offset),
          :ok    <- begin_streaming()
     do
+      Logger.debug "[#{state.topic_name}##{state.partition_number}] Consumer starting at offset #{offset}"
       {:ok, state}
     else
       {:error, error} ->

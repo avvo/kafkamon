@@ -13,6 +13,7 @@ defmodule Reader.Supervisor do
         auto_fetch: Application.fetch_env!(:kafkamon, :auto_topic_fetching),
         name: Reader.Topics,
       ]]),
+      worker(Reader.EventQueue, [[name: Reader.EventQueue]]),
     ] |> supervise(strategy: :rest_for_one)
   end
 end

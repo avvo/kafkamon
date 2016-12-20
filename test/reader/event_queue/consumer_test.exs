@@ -38,7 +38,6 @@ defmodule Reader.EventQueue.ConsumerTest do
   end
 
   test "broadcasts messages it reads from kafka", %{
-    consumer: consumer,
     topic: topic,
     message: message,
     v_canonical: v_canonical,

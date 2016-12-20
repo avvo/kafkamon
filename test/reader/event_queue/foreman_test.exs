@@ -18,6 +18,7 @@ defmodule Reader.EventQueue.ForemanTest do
     assert capture_log([level: :info, format: "$message", colors: [enabled: false]], fn ->
       send foreman, {:topics, [{"foo1", 3}]}
       assert Foreman.known_topics(foreman) == [{"foo1", 3}]
+      Foreman.start_topic(foreman, "foo1")
     end) == "" # no logs, like already started
     assert Supervisor.count_children(eqs).workers == 3
   end
@@ -25,6 +26,7 @@ defmodule Reader.EventQueue.ForemanTest do
   test "terminates a worker when a topic is removed", %{foreman: foreman, eqs: eqs} do
     send foreman, {:topics, [{"foo2", 3}]}
     assert Foreman.known_topics(foreman) == [{"foo2", 3}]
+    Foreman.start_topic(foreman, "foo2")
     assert Supervisor.count_children(eqs).workers == 3
 
     send foreman, {:topics, []}
@@ -35,6 +37,7 @@ defmodule Reader.EventQueue.ForemanTest do
   test "doesn't blow up when creating an already existing worker", %{foreman: foreman, eqs: eqs} do
     send foreman, {:topics, [{"foo3", 3}]}
     assert Foreman.known_topics(foreman) == [{"foo3", 3}]
+    Foreman.start_topic(foreman, "foo3")
 
     {:ok, foreman2} = Foreman.start_link(supervisor: eqs, topic_subscribe: false)
     send foreman2, {:topics, [{"foo3", 3}]}
