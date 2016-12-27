@@ -3,3 +3,5 @@ stack_name: kafkamon
 image: dplummer1avvo/kafkamon
 facing: internal
 health_check: false
+ports: 
+  - "4000:4000"
