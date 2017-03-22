@@ -90,6 +90,6 @@ defmodule Kafkamon.TopicsSubscriber do
   end
 
   defp flush_later(delay \\ 0) do
-    Process.send_after self, :flush, @stream_wait_time_ms + delay
+    Process.send_after self(), :flush, @stream_wait_time_ms + delay
   end
 end

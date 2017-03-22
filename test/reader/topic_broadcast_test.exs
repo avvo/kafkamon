@@ -8,7 +8,7 @@ defmodule Reader.TopicBroadcastTest do
   end
 
   test ".notify/3 can notify a specific process" do
-    Reader.TopicBroadcast.notify(self, [{"b", 3}])
+    Reader.TopicBroadcast.notify(self(), [{"b", 3}])
     assert_received {:topics, [{"b", 3}]}
   end
 end

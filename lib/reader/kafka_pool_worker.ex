@@ -23,7 +23,7 @@ defmodule Reader.KafkaPoolWorker do
   end
 
   def send_me_worker_pid_for_test do
-    test_pid = self
+    test_pid = self()
     :poolboy.transaction(@poolname, fn pid ->
       send test_pid, {:worker_pid_for_test, pid}
     end)

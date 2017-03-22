@@ -2,7 +2,7 @@ defmodule Kafkamon.TopicChannel do
   use Phoenix.Channel
 
   def join("topic:" <> _topic_name, _params, socket) do
-    send self, :after_join
+    send self(), :after_join
     {:ok, socket}
   end
 
