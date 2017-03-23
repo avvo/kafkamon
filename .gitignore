@@ -15,6 +15,8 @@ erl_crash.dump
 # this depending on your deployment strategy.
 /priv/static/
 
+# keep the one /rel file
+
 # The config/prod.secret.exs file by default contains sensitive
 # data and you should not commit it into version control.
 #
@@ -22,5 +24,7 @@ erl_crash.dump
 # secrets file as long as you replace its contents by environment
 # variables.
 /config/prod.secret.exs
-/rel
+!/rel
+/rel/*
+!/rel/config.exs
 /tarballs
