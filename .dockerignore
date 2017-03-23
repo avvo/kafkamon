@@ -1,0 +1,10 @@
+node_modules
+priv/static
+.git
+_build
+cover
+doc
+test
+tmp
+erl_crash.dump
+*.ez

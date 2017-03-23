@@ -1,6 +1,8 @@
+---
 service_name: kafkamon
 stack_name: kafkamon
-image: dplummer1avvo/kafkamon
+image: avvo/kafkamon
 facing: backend
-health_check: false
-
+health_check:
+  port: 4000
+  request_line: GET "/options/full_stack_status" "HTTP/1.0"

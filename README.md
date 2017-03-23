@@ -43,7 +43,7 @@ docker run --rm \
 -e "KAFKAMON_HOST=localhost" \
 -e "KAFKAMON_PORT=4000" \
 -p 4000:4000 \
-dplummer1avvo/kafkamon:latest
+avvo/kafkamon:latest
 ```
 
 * `PORT` is the port phoenix listens to inside the container

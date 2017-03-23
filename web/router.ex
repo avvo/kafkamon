@@ -17,6 +17,10 @@ defmodule Kafkamon.Router do
     pipe_through :browser # Use the default browser stack
 
     get "/", PageController, :index
+    get "/options/ping", OptionsController, :ping
+    get "/options/fail", OptionsController, :fail
+    get "/options/deploy_status", OptionsController, :deploy_status
+    get "/options/full_stack_status", OptionsController, :full_stack_status
   end
 
   # Other scopes may use custom stacks.

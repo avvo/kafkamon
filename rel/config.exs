@@ -2,7 +2,7 @@ use Mix.Releases.Config,
     # This sets the default release built by `mix release`
     default_release: :default,
     # This sets the default environment used by `mix release`
-    default_environment: :dev
+    default_environment: Mix.env()
 
 # For a full list of config options for both releases
 # and environments, visit https://hexdocs.pm/distillery/configuration.html
@@ -32,4 +32,7 @@ end
 
 release :kafkamon do
   set version: current_version(:kafkamon)
+  set applications: [
+    web: :permanent
+  ]
 end
