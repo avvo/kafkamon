@@ -28,3 +28,4 @@ erl_crash.dump
 /rel/*
 !/rel/config.exs
 /tarballs
+/kafkamon.tar.gz
