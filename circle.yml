@@ -50,7 +50,7 @@ jobs:
       - run:
           name: Build docker image and publish container tagged with branch
           command: |
-            docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+            docker login -u $DOCKER_USER -p $DOCKER_PASS
             bin/build.sh
             docker push avvo/kafkamon:$CIRCLE_BRANCH
       - run:
