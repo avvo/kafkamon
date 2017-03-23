@@ -2,46 +2,23 @@ defmodule Kafkamon.Mixfile do
   use Mix.Project
 
   def project do
-    [app: :kafkamon,
-     version: "0.0.1",
-     elixir: "~> 1.2",
-     elixirc_paths: elixirc_paths(Mix.env),
-     compilers: [:phoenix, :gettext] ++ Mix.compilers,
-     build_embedded: Mix.env == :prod,
-     start_permanent: Mix.env == :prod,
-     deps: deps()]
+    [
+      app: :kafkamon,
+      version: "0.0.1",
+      elixirc_paths: elixirc_paths(Mix.env),
+      compilers: [:phoenix, :gettext] ++ Mix.compilers,
+      build_embedded: Mix.env == :prod,
+      start_permanent: Mix.env == :prod,
+      elixir: "~> 1.4",
+      deps: deps(),
+    ]
   end
 
   # Configuration for the OTP application.
   #
   # Type `mix help compile.app` for more information.
   def application do
-    [
-      mod: {Kafkamon, []},
-      applications: applications(Mix.env)
-    ]
-  end
-
-  def applications(:test) do
-    applications(:all) |> Enum.reject(&(&1 == :kafka_ex))
-  end
-
-  def applications(_) do
-    [
-      :avrolixr,
-      :cowboy,
-      :erlavro,
-      :gettext,
-      :kafka_ex,
-      :kafka_impl,
-      :logger,
-      :logger_file_backend,
-      :phoenix,
-      :phoenix_html,
-      :phoenix_pubsub,
-      :phoenix_slime,
-      :poolboy,
-    ]
+    [mod: {Kafkamon, []}]
   end
 
   # Specifies which paths to compile per environment.
