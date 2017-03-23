@@ -9,6 +9,7 @@ jobs:
 
     environment:
       MIX_ENV: test
+      KAFKA_HOSTS: 127.0.0.1:9092
 
     steps:
       - checkout
