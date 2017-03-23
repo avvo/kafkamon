@@ -33,4 +33,3 @@ end
 release :kafkamon do
   set version: current_version(:kafkamon)
 end
-

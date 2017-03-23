@@ -9,7 +9,7 @@ defmodule Reader.EventQueue.Foreman do
 
   def init(opts \\ []) do
     if Keyword.get(opts, :topic_subscribe, true) do
-      send self, :topic_subscribe
+      send self(), :topic_subscribe
     end
 
     supervisor = Keyword.get(opts, :supervisor, Reader.EventQueue.Supervisor)

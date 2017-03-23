@@ -57,7 +57,7 @@ defmodule Reader.EventQueue.Consumer do
       last_offset -> last_offset + 1
     end
 
-    Process.send_after self, :fetch, @stream_wait_time_ms
+    Process.send_after self(), :fetch, @stream_wait_time_ms
 
     {:noreply, %{state | offset: next_offset}}
   end
@@ -98,7 +98,7 @@ defmodule Reader.EventQueue.Consumer do
   end
 
   defp begin_streaming() do
-    send self, :fetch
+    send self(), :fetch
     :ok
   end
 end
