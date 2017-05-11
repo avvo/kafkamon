@@ -1,7 +1,7 @@
 defmodule Mix.Tasks.Kafkamon.TestProducer do
   use Mix.Task
 
-  @event_type 'AvvoEvent.AvvoProAdded'
+  @event_type 'TestNamespace.TestEvent'
 
   @shortdoc "Write some events to kafka for testing"
 
@@ -9,7 +9,7 @@ defmodule Mix.Tasks.Kafkamon.TestProducer do
     {:ok, brokers} = KafkaImpl.Util.kafka_brokers()
     {:ok, worker} = KafkaImpl.create_no_name_worker(brokers, :no_consumer_group)
 
-    schema_path = "test/data/AvvoProAdded.avsc"
+    schema_path = "test/data/TestEvent.avsc"
     {:ok, schema_json} = File.read(schema_path)
 
     ProgressBar.render_spinner [

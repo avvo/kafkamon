@@ -17,9 +17,9 @@ defmodule Reader.EventQueue.ConsumerTest do
       {:worker_pid_for_test, pid} -> pid
     end
 
-    schema_path = "test/data/AvvoProAdded.avsc"
+    schema_path = "test/data/TestEvent.avsc"
     {:ok, schema_json} = File.read(schema_path)
-    type = 'AvvoEvent.AvvoProAdded'
+    type = 'TestNamespace.TestEvent'
     v = %{event: %{app_id: "a", name: "n", timestamp: 0}, lawyer_id: 0}
     v_canonical = %{
       "event" => %{"app_id" => "a", "name" => "n", "timestamp" => 0},
@@ -27,7 +27,8 @@ defmodule Reader.EventQueue.ConsumerTest do
     }
     message = Avrolixr.Codec.encode!(v, schema_json, type)
 
-    {:ok,
+    {
+      :ok,
       consumer: consumer,
       kafka: kafka,
       message: message,

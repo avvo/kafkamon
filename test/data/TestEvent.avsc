@@ -1,0 +1,25 @@
+{
+  "type" : "record",
+  "name" : "TestEvent",
+  "namespace" : "TestNamespace",
+  "fields" : [ {
+    "name" : "event",
+    "type" : {
+      "type" : "record",
+      "name" : "Event",
+      "fields" : [ {
+        "name" : "name",
+        "type" : "string"
+      }, {
+        "name" : "timestamp",
+        "type" : "int"
+      }, {
+        "name" : "app_id",
+        "type" : "string"
+      } ]
+    },
+  }, {
+    "name" : "lawyer_id",
+    "type" : "int"
+  } ]
+}
