@@ -4,48 +4,42 @@ defmodule Kafkamon.Mixfile do
   def project do
     [
       app: :kafkamon,
-      version: "0.0.1",
+      version: "0.0.2",
       elixirc_paths: elixirc_paths(Mix.env),
       compilers: [:phoenix, :gettext] ++ Mix.compilers,
       build_embedded: Mix.env == :prod,
       start_permanent: Mix.env == :prod,
       elixir: "~> 1.4",
-      deps: deps(),
+      deps: deps()
     ]
   end
 
-  # Configuration for the OTP application.
-  #
-  # Type `mix help compile.app` for more information.
   def application do
     [mod: {Kafkamon, []}]
   end
 
-  # Specifies which paths to compile per environment.
-  defp elixirc_paths(:test), do: ["lib", "web", "test/support"]
-  defp elixirc_paths(_),     do: ["lib", "web"]
+  defp elixirc_paths(:test), do: ~w[lib web test/support]
+  defp elixirc_paths(_), do: ~w[lib web]
 
-  # Specifies your project dependencies.
-  #
-  # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:avrolixr, ">= 0.1.3"},
-      {:cowboy, "~> 1.0"},
+      {:avrolixr, "~> 0.2"},
+      {:cowboy, "~> 1.1"},
       {:erlavro, github: "avvo/erlavro", override: true},
-      {:gettext, "~> 0.11"},
-      {:junit_formatter, "~> 1.1.0", only: :test},
-      {:kafka_ex, "~> 0.6.0"},
-      {:kafka_impl, "~> 0.1"},
+      {:gettext, "~> 0.13"},
+      {:kafka_ex, "~> 0.6"},
+      {:kafka_impl, "~> 0.4"},
       {:logger_file_backend, "~> 0.0"},
-      {:mix_docker, "~> 0.3"},
-      {:phoenix, "~> 1.2.0"},
-      {:phoenix_html, "~> 2.6"},
-      {:phoenix_live_reload, "~> 1.0", only: :dev},
+      {:mix_docker, "~> 0.4"},
+      {:phoenix, "~> 1.2"},
+      {:phoenix_html, "~> 2.9"},
       {:phoenix_pubsub, "~> 1.0"},
-      {:phoenix_slime, "~> 0.7.0"},
+      {:phoenix_slime, "~> 0.8"},
       {:poolboy, "~> 1.5"},
-      {:progress_bar, "> 0.0.0", only: [:test, :dev]},
+      # NON-PRODUCTION DEPS
+      {:junit_formatter, "~> 1.3", only: :test},
+      {:phoenix_live_reload, "~> 1.0", only: :dev},
+      {:progress_bar, "~> 1.6", only: [:test, :dev]}
     ]
   end
 end
