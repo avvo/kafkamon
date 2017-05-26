@@ -12,4 +12,4 @@ routing:
   port: 80
   protocol: http
   subdomain: kafkamon
-  
+
