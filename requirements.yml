@@ -3,13 +3,10 @@ service_name: kafkamon
 stack_name: kafkamon
 image: avvo/kafkamon
 facing: backend
-health_check:
-  port: 4000
-  request_line: GET "/options/full_stack_status" "HTTP/1.0"
+health_check: false
 routing:
   lb_port: 8890
   path: /
   port: 80
   protocol: http
   subdomain: kafkamon
-
