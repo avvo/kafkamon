@@ -6,7 +6,7 @@ config :kafkamon, pool_size: 1
 
 # We don't run a server during test. If one is required,
 # you can enable the server option below.
-config :kafkamon, Kafkamon.Endpoint,
+config :kafkamon, KafkamonWeb.Endpoint,
   http: [port: 4001],
   server: false
 

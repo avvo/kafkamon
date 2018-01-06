@@ -4,22 +4,24 @@ defmodule Kafkamon.Mixfile do
   def project do
     [
       app: :kafkamon,
-      version: "0.0.2",
+      version: "0.0.1",
+      elixir: "~> 1.5",
       elixirc_paths: elixirc_paths(Mix.env),
       compilers: [:phoenix, :gettext] ++ Mix.compilers,
-      build_embedded: Mix.env == :prod,
       start_permanent: Mix.env == :prod,
-      elixir: "~> 1.4",
       deps: deps()
     ]
   end
 
   def application do
-    [mod: {Kafkamon, []}]
+    [
+      mod: {Kafkamon.Application, []},
+      extra_applications: [:logger, :runtime_tools]
+    ]
   end
 
-  defp elixirc_paths(:test), do: ~w[lib web test/support]
-  defp elixirc_paths(_), do: ~w[lib web]
+  defp elixirc_paths(:test), do: ~w[lib test/support]
+  defp elixirc_paths(_),     do: ~w[lib]
 
   defp deps do
     [
@@ -30,16 +32,17 @@ defmodule Kafkamon.Mixfile do
       {:kafka_ex, "~> 0.6"},
       {:kafka_impl, "~> 0.4"},
       {:logger_file_backend, "~> 0.0"},
-      {:mix_docker, "~> 0.4"},
-      {:phoenix, "~> 1.2"},
-      {:phoenix_html, "~> 2.9"},
+      {:phoenix, "~> 1.3"},
+      {:phoenix_html, "~> 2.10"},
       {:phoenix_pubsub, "~> 1.0"},
       {:phoenix_slime, "~> 0.8"},
       {:poolboy, "~> 1.5"},
+
       # NON-PRODUCTION DEPS
-      {:junit_formatter, "~> 1.3", only: :test},
+      {:junit_formatter, "~> 2.0", only: :test},
       {:phoenix_live_reload, "~> 1.0", only: :dev},
-      {:progress_bar, "~> 1.6", only: [:test, :dev]}
+      {:progress_bar, "~> 1.6", only: [:test, :dev]},
+      {:mix_test_watch, "~> 0.5", only: :dev},
     ]
   end
 end
