@@ -17,12 +17,12 @@ defmodule KafkamonWeb.TopicChannel do
   end
 
   def handle_info(:after_join, %{topic: "topic:" <> topic_name} = socket) do
-    Reader.EventQueue.join(topic_name)
+    Kafkamon.Reader.EventQueue.join(topic_name)
     {:noreply, socket}
   end
 
   def terminate(_reason, %{topic: "topic:" <> topic_name}) do
-    Reader.EventQueue.leave(topic_name)
+    Kafkamon.Reader.EventQueue.leave(topic_name)
     :ok
   end
 end

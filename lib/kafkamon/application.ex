@@ -6,7 +6,7 @@ defmodule Kafkamon.Application do
 
     children = [
       supervisor(Phoenix.PubSub.PG2, [KafkamonInternal, [name: KafkamonInternal]]),
-      supervisor(Reader.Supervisor, []),
+      supervisor(Kafkamon.Reader.Supervisor, []),
       supervisor(KafkamonWeb.Endpoint, []),
       worker(Kafkamon.TopicsSubscriber, []),
     ]

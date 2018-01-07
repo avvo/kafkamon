@@ -1,10 +1,10 @@
-defmodule Reader.TopicBroadcast do
+defmodule Kafkamon.Reader.TopicBroadcast do
   alias Phoenix.PubSub
   @topic "topics"
 
   def subscribe() do
     PubSub.subscribe KafkamonInternal, @topic
-    Reader.Topics.new_subscriber()
+    Kafkamon.Reader.Topics.new_subscriber()
   end
 
   def notify(new_topics) do

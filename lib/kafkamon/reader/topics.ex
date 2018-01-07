@@ -1,4 +1,4 @@
-defmodule Reader.Topics do
+defmodule Kafkamon.Reader.Topics do
   use GenServer
 
   @refresh_time_in_ms 5 * 60 * 1000
@@ -36,15 +36,15 @@ defmodule Reader.Topics do
   end
 
   def handle_cast({:new_subscriber, from}, topics) do
-    Reader.TopicBroadcast.notify(from, topics)
+    Kafkamon.Reader.TopicBroadcast.notify(from, topics)
     {:noreply, topics}
   end
 
   def handle_cast(:fetch_topics, old_topics) do
-    new_topics = Reader.KafkaPoolWorker.topics
+    new_topics = Kafkamon.Reader.KafkaPoolWorker.topics
 
     if new_topics != old_topics do
-      Reader.TopicBroadcast.notify(new_topics)
+      Kafkamon.Reader.TopicBroadcast.notify(new_topics)
     end
 
     {:noreply, new_topics}

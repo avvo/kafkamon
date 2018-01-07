@@ -1,4 +1,4 @@
-defmodule Reader.EventQueue.Foreman do
+defmodule Kafkamon.Reader.EventQueue.Foreman do
   require Logger
 
   use GenServer
@@ -12,7 +12,7 @@ defmodule Reader.EventQueue.Foreman do
       send self(), :topic_subscribe
     end
 
-    supervisor = Keyword.get(opts, :supervisor, Reader.EventQueue.Supervisor)
+    supervisor = Keyword.get(opts, :supervisor, Kafkamon.Reader.EventQueue.Supervisor)
 
     {:ok, {supervisor, []}}
   end
@@ -58,7 +58,7 @@ defmodule Reader.EventQueue.Foreman do
   end
 
   def handle_info(:topic_subscribe, state) do
-    Reader.TopicBroadcast.subscribe()
+    Kafkamon.Reader.TopicBroadcast.subscribe()
     {:noreply, state}
   end
 
@@ -67,14 +67,14 @@ defmodule Reader.EventQueue.Foreman do
   defp topic_added(supervisor, {topic, partitions}) do
     Logger.debug("Starting workers for #{topic} with #{partitions} partitions")
     for n <- 1..partitions do
-      Reader.EventQueue.Supervisor.start_child(supervisor, topic, n - 1)
+      Kafkamon.Reader.EventQueue.Supervisor.start_child(supervisor, topic, n - 1)
     end
   end
 
   def topic_removed(supervisor, {topic, partitions}) do
     Logger.debug("Stopping workers for #{topic} with #{partitions} partitions")
     for n <- 1..partitions do
-      Reader.EventQueue.Supervisor.terminate_child(supervisor, topic, n - 1)
+      Kafkamon.Reader.EventQueue.Supervisor.terminate_child(supervisor, topic, n - 1)
     end
   end
 end

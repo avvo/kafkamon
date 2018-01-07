@@ -1,8 +1,8 @@
-defmodule Reader.EventQueue.ConsumerTest do
+defmodule Kafkamon.Reader.EventQueue.ConsumerTest do
   use ExUnit.Case, async: true
 
-  alias Reader.EventQueue.{Broadcast,Consumer}
-  alias Reader.EventQueue.Consumer.{State,Message}
+  alias Kafkamon.Reader.EventQueue.{Broadcast,Consumer}
+  alias Kafkamon.Reader.EventQueue.Consumer.{State,Message}
   alias KafkaImpl.KafkaMock
 
   setup do

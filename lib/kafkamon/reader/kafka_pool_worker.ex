@@ -1,4 +1,4 @@
-defmodule Reader.KafkaPoolWorker do
+defmodule Kafkamon.Reader.KafkaPoolWorker do
   require Logger
   use GenServer
 
@@ -8,7 +8,7 @@ defmodule Reader.KafkaPoolWorker do
     {:ok, brokers} = KafkaImpl.Util.kafka_brokers()
     :poolboy.child_spec(@poolname, [
       {:name, {:local, @poolname}},
-      {:worker_module, Reader.KafkaPoolWorker},
+      {:worker_module, Kafkamon.Reader.KafkaPoolWorker},
       {:size, Application.get_env(:kafkamon, :pool_size)},
       {:max_overflow, 0},
     ], brokers)

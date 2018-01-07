@@ -1,20 +1,20 @@
-defmodule Reader.LoggerTest do
+defmodule Kafkamon.Reader.LoggerTest do
   use ExUnit.Case, async: false
   import ExUnit.CaptureLog
 
   setup do
-    {:ok, logger} = Reader.Logger.start_link topic_subscribe: false
+    {:ok, logger} = Kafkamon.Reader.Logger.start_link topic_subscribe: false
     {:ok, logger: logger}
   end
 
   test "logs topics change", %{logger: logger} do
-    assert Reader.Logger.known_topics(logger) == []
+    assert Kafkamon.Reader.Logger.known_topics(logger) == []
 
     capture_log(fn -> 1 end)
     assert capture_log([level: :info, format: "$message\n", colors: [enabled: false]], fn ->
-      Reader.TopicBroadcast.notify(logger, [{"old", 3}, {"busted", 1}])
-      Reader.TopicBroadcast.notify(logger, [{"new", 3}, {"hotness", 3}, {"busted", 1}])
-      assert Reader.Logger.known_topics(logger) == [{"new", 3}, {"hotness", 3}, {"busted", 1}]
+      Kafkamon.Reader.TopicBroadcast.notify(logger, [{"old", 3}, {"busted", 1}])
+      Kafkamon.Reader.TopicBroadcast.notify(logger, [{"new", 3}, {"hotness", 3}, {"busted", 1}])
+      assert Kafkamon.Reader.Logger.known_topics(logger) == [{"new", 3}, {"hotness", 3}, {"busted", 1}]
     end) == """
     Logger subscribing to old #3
     Logger subscribing to busted #1

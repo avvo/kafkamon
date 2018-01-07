@@ -1,7 +1,7 @@
 defmodule Kafkamon.TopicsSubscriber do
   use GenServer
 
-  alias Reader.EventQueue.Consumer.Message
+  alias Kafkamon.Reader.EventQueue.Consumer.Message
 
   @stream_wait_time_ms Application.fetch_env!(:kafkamon, :consumer_wait_ms)
 
@@ -16,7 +16,7 @@ defmodule Kafkamon.TopicsSubscriber do
   def start_link, do: GenServer.start_link(__MODULE__, :ok, name: __MODULE__)
 
   def init(:ok) do
-    Reader.TopicBroadcast.subscribe()
+    Kafkamon.Reader.TopicBroadcast.subscribe()
     flush_later(10)
     {:ok, %State{}}
   end
@@ -77,11 +77,11 @@ defmodule Kafkamon.TopicsSubscriber do
 
   defp topic_added(topic) do
     KafkamonWeb.Endpoint.broadcast("topic:#{topic}", "subscribe", %{})
-    Reader.EventQueue.Broadcast.subscribe(topic)
+    Kafkamon.Reader.EventQueue.Broadcast.subscribe(topic)
   end
 
   def topic_removed(topic) do
-    Reader.EventQueue.Broadcast.unsubscribe(topic)
+    Kafkamon.Reader.EventQueue.Broadcast.unsubscribe(topic)
     KafkamonWeb.Endpoint.broadcast("topic:#{topic}", "unsubscribe", %{})
   end
 

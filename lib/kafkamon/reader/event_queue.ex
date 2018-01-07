@@ -1,8 +1,8 @@
-defmodule Reader.EventQueue do
+defmodule Kafkamon.Reader.EventQueue do
   use GenServer
 
   defmodule TopicPresence do
-    alias Reader.EventQueue.Foreman
+    alias Kafkamon.Reader.EventQueue.Foreman
 
     def new, do: %{}
 

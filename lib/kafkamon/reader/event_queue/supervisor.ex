@@ -1,8 +1,8 @@
-defmodule Reader.EventQueue.Supervisor do
+defmodule Kafkamon.Reader.EventQueue.Supervisor do
   require Logger
   use Supervisor
 
-  alias Reader.EventQueue.Consumer.State
+  alias Kafkamon.Reader.EventQueue.Consumer.State
 
   def start_link(opts \\ []) do
     Supervisor.start_link(__MODULE__, :ok, Keyword.take(opts, [:name]))
@@ -10,7 +10,7 @@ defmodule Reader.EventQueue.Supervisor do
 
   def init(:ok) do
     [
-      worker(Reader.EventQueue.Consumer, [], restart: :transient)
+      worker(Kafkamon.Reader.EventQueue.Consumer, [], restart: :transient)
     ] |> supervise(strategy: :simple_one_for_one)
   end
 
@@ -19,10 +19,10 @@ defmodule Reader.EventQueue.Supervisor do
       {:ok, pid}
     else
       {:error, {:already_started, pid}} ->
-        Logger.info("Reader.EventQueue.Supervisor already started child for #{topic}")
+        Logger.info("Kafkamon.Reader.EventQueue.Supervisor already started child for #{topic}")
         {:ok, pid}
       error ->
-        Logger.error("Reader.EventQueue.Supervisor error #{topic}: #{inspect error}")
+        Logger.error("Kafkamon.Reader.EventQueue.Supervisor error #{topic}: #{inspect error}")
         :timer.sleep(5)
         System.halt(1)
         error

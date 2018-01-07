@@ -1,6 +1,6 @@
-defmodule Reader.EventQueue.Broadcast do
+defmodule Kafkamon.Reader.EventQueue.Broadcast do
   alias Phoenix.PubSub
-  alias Reader.EventQueue.Consumer.Message
+  alias Kafkamon.Reader.EventQueue.Consumer.Message
 
   def subscribe(topic), do: PubSub.subscribe KafkamonInternal, pubsub_topic(topic)
 

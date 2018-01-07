@@ -1,7 +1,7 @@
-defmodule Reader.Logger do
+defmodule Kafkamon.Reader.Logger do
   require Logger
 
-  alias Reader.EventQueue.Consumer.Message
+  alias Kafkamon.Reader.EventQueue.Consumer.Message
 
   use GenServer
 
@@ -11,7 +11,7 @@ defmodule Reader.Logger do
 
   def init(opts \\ []) do
     if Keyword.get(opts, :topic_subscribe, true) do
-      Reader.TopicBroadcast.subscribe()
+      Kafkamon.Reader.TopicBroadcast.subscribe()
     end
     {:ok, []}
   end
@@ -27,12 +27,12 @@ defmodule Reader.Logger do
   def handle_info({:topics, new_topics}, known_topics) do
     new_topics |> Enum.reject(&(&1 in known_topics)) |> Enum.each(fn {topic, n} ->
       Logger.info "Logger subscribing to #{topic} ##{n}"
-      Reader.EventQueue.Broadcast.subscribe(topic)
+      Kafkamon.Reader.EventQueue.Broadcast.subscribe(topic)
     end)
 
     known_topics |> Enum.reject(&(&1 in new_topics)) |> Enum.each(fn {topic, n} ->
       Logger.info "Logger unsubscribing to #{topic} ##{n}"
-      Reader.EventQueue.Broadcast.unsubscribe(topic)
+      Kafkamon.Reader.EventQueue.Broadcast.unsubscribe(topic)
     end)
 
     Logger.info "Topics changed. Was: #{inspect known_topics}, Now: #{inspect new_topics}"

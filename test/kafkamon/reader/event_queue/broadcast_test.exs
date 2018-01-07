@@ -1,8 +1,8 @@
-defmodule Reader.EventQueue.BroadcastTest do
+defmodule Kafkamon.Reader.EventQueue.BroadcastTest do
   use ExUnit.Case, async: true
 
-  alias Reader.EventQueue.Broadcast
-  alias Reader.EventQueue.Consumer.Message
+  alias Kafkamon.Reader.EventQueue.Broadcast
+  alias Kafkamon.Reader.EventQueue.Consumer.Message
 
   @message %Message{value: "message", topic: "foo", offset: 12, partition: 3}
 

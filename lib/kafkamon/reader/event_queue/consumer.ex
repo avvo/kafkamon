@@ -1,4 +1,4 @@
-defmodule Reader.EventQueue.Consumer do
+defmodule Kafkamon.Reader.EventQueue.Consumer do
   require Logger
   use GenServer
 
@@ -43,7 +43,7 @@ defmodule Reader.EventQueue.Consumer do
   end
 
   def handle_info(:fetch, state) do
-    {:ok, response} = Reader.KafkaPoolWorker.fetch(state.topic_name, state.partition_number, state.offset)
+    {:ok, response} = Kafkamon.Reader.KafkaPoolWorker.fetch(state.topic_name, state.partition_number, state.offset)
 
     %{partitions: [%{last_offset: last_offset, message_set: messages}]} = response
 
@@ -64,7 +64,7 @@ defmodule Reader.EventQueue.Consumer do
 
   defp latest_offset(%{offset: offset}) when is_integer(offset), do: offset
   defp latest_offset(%{topic_name: topic, partition_number: partition}) do
-    Reader.KafkaPoolWorker.latest_offset(topic, partition)
+    Kafkamon.Reader.KafkaPoolWorker.latest_offset(topic, partition)
   end
 
   defp broadcast_message(topic, partition, offset, value) do
@@ -91,7 +91,7 @@ defmodule Reader.EventQueue.Consumer do
 
   defp broadcast(encoded_message = %Message{}) do
     try do
-      encoded_message |> Reader.EventQueue.Broadcast.notify
+      encoded_message |> Kafkamon.Reader.EventQueue.Broadcast.notify
     rescue
       error -> Logger.error "Could not broadcast message: #{inspect error}"
     end
