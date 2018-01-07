@@ -7,6 +7,8 @@ import {Socket} from "phoenix"
 import React from "react"
 import ReactDOM from "react-dom"
 import Toggle from "react-toggle"
+import CreateReactClass from "create-react-class"
+import "react-toggle/style.css";
 
 let socket = new Socket("/socket", {params: {token: window.userToken}})
 
@@ -58,7 +60,7 @@ socket.connect()
 
 // Now that you are connected, you can join channels with a topic:
 
-let Main = React.createClass({
+let Main = CreateReactClass({
   getInitialState() {
     return {
       topics: [],
@@ -128,7 +130,7 @@ let Main = React.createClass({
   }
 })
 
-let TopicList = React.createClass({
+let TopicList = CreateReactClass({
   render() {
     return(
       <div>
@@ -140,7 +142,7 @@ let TopicList = React.createClass({
   }
 })
 
-let TopicLink = React.createClass({
+let TopicLink = CreateReactClass({
   handleChange(event) {
     this.props.onChange(this.props.name, event)
   },
@@ -154,7 +156,7 @@ let TopicLink = React.createClass({
   }
 })
 
-let Messages = React.createClass({
+let Messages = CreateReactClass({
   render() {
     return(
       <div>
@@ -164,7 +166,7 @@ let Messages = React.createClass({
   }
 })
 
-let MessageList = React.createClass({
+let MessageList = CreateReactClass({
   render() {
     return (
       <div className="messageList">
@@ -176,7 +178,7 @@ let MessageList = React.createClass({
   }
 })
 
-let Message = React.createClass({
+let Message = CreateReactClass({
   getInitialState() {
     let {event, ...message} = this.props.data.value
     return {
@@ -199,7 +201,7 @@ let Message = React.createClass({
   }
 })
 
-let Event = React.createClass({
+let Event = CreateReactClass({
   render() {
     return (
       <div className="event">
@@ -215,7 +217,7 @@ let Event = React.createClass({
   }
 })
 
-let Timestamp = React.createClass({
+let Timestamp = CreateReactClass({
   pad(number) {
     if (number < 10) {
       return '0' + number
