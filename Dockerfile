@@ -8,7 +8,7 @@ WORKDIR assets
 
 RUN npm install
 
-RUN ./node_modules/brunch/bin/brunch b -p
+RUN npm run deploy
 
 WORKDIR /opt/app
 RUN mix phx.digest

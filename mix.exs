@@ -39,6 +39,7 @@ defmodule Kafkamon.Mixfile do
       {:poolboy, "~> 1.5"},
 
       # NON-PRODUCTION DEPS
+      {:distillery, "~> 1.5"},
       {:junit_formatter, "~> 2.0", only: :test},
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:progress_bar, "~> 1.6", only: [:test, :dev]},
