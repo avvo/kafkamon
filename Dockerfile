@@ -30,8 +30,8 @@ RUN echo $SOURCE_COMMIT
 ENV COMMIT_HASH $SOURCE_COMMIT
 
 WORKDIR /opt/app
-
-ADD kafkamon.tar.gz ./
+COPY --from=0  _build/prod/rel/kafkamon/releases/0.0.2/kafkamon.tar.gz .
+RUN tar zxf kafkamon.tar.gz
 
 ENTRYPOINT ["/opt/app/bin/kafkamon"]
 CMD ["foreground"]
