@@ -27,8 +27,8 @@ defmodule Kafkamon.Mixfile do
       {:cowboy, "~> 1.1"},
       {:erlavro, github: "avvo/erlavro", override: true},
       {:gettext, "~> 0.13"},
-      {:kafka_ex, "~> 0.6"},
-      {:kafka_impl, "~> 0.4"},
+      {:kafka_ex, "~> 0.8.1"},
+      {:kafka_impl, "~> 0.5.0"},
       {:logger_file_backend, "~> 0.0"},
       {:mix_docker, "~> 0.4"},
       {:phoenix, "~> 1.2"},
@@ -36,7 +36,6 @@ defmodule Kafkamon.Mixfile do
       {:phoenix_pubsub, "~> 1.0"},
       {:phoenix_slime, "~> 0.8"},
       {:poolboy, "~> 1.5"},
-      # NON-PRODUCTION DEPS
       {:junit_formatter, "~> 1.3", only: :test},
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:progress_bar, "~> 1.6", only: [:test, :dev]}
