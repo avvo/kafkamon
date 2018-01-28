@@ -23,7 +23,7 @@ defmodule Kafkamon.Mixfile do
 
   defp deps do
     [
-      {:avrolixr, "~> 0.2"},
+      {:avrolixr, "~> 0.3.0"},
       {:cowboy, "~> 1.1"},
       {:erlavro, github: "avvo/erlavro", override: true},
       {:gettext, "~> 0.13"},
