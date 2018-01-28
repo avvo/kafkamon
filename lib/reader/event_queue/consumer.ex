@@ -80,7 +80,7 @@ defmodule Reader.EventQueue.Consumer do
   end
 
   defp decode(value) do
-    Logger.info("got error trying to decode in consumer: #{inspect value}")
+    Logger.error("got value in consumer: #{inspect value}")
     try do
       value |> Avrolixr.Codec.decode
     rescue
