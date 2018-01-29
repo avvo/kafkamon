@@ -23,7 +23,7 @@ config :logger,
     :console,
   ]
 
-config :logger, level: :warn
+config :logger, level: :debug
 
 # ## SSL Support
 #
