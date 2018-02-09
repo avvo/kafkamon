@@ -1,24 +1,9 @@
 defmodule Kafkamon do
-  use Application
+  @moduledoc """
+  Kafkamon keeps the contexts that define your domain
+  and business logic.
 
-  # See http://elixir-lang.org/docs/stable/elixir/Application.html
-  # for more information on OTP Applications
-  def start(_type, _args) do
-    import Supervisor.Spec
-
-    [
-      supervisor(Phoenix.PubSub.PG2, [KafkamonInternal, [name: KafkamonInternal]]),
-      supervisor(Reader.Supervisor, []),
-      supervisor(Kafkamon.Endpoint, []),
-      worker(Kafkamon.TopicsSubscriber, []),
-    ]
-    |> Supervisor.start_link(strategy: :one_for_one, name: Kafkamon.Supervisor)
-  end
-
-  # Tell Phoenix to update the endpoint configuration
-  # whenever the application is updated.
-  def config_change(changed, _new, removed) do
-    Kafkamon.Endpoint.config_change(changed, removed)
-    :ok
-  end
+  Contexts are also responsible for managing your data, regardless
+  if it comes from the database, an external API or others.
+  """
 end

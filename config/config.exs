@@ -9,13 +9,11 @@ config :kafkamon, auto_topic_fetching: true
 config :kafkamon, consumer_wait_ms: 500
 config :kafkamon, pool_size: 12
 
-config :mix_docker, image: "avvo/kafkamon"
-
 # Configures the endpoint
-config :kafkamon, Kafkamon.Endpoint,
+config :kafkamon, KafkamonWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "uwVHor5JAVrZE4H7bSs7DGVwqrJrX5RefdeX8xWF0csd6vi32JUaYL3NcdgP1kIP",
-  render_errors: [view: Kafkamon.ErrorView, accepts: ~w(html json)],
+  render_errors: [view: KafkamonWeb.ErrorView, accepts: ~w(html json)],
   pubsub: [name: Kafkamon.PubSub,
            adapter: Phoenix.PubSub.PG2]
 
