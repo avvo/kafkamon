@@ -83,6 +83,6 @@ jobs:
           name: Publish latest if master
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              docker tag avvo/kafkamon:${CIRCLE_BRANCH} avvo/kafkamon:latest
+              docker tag avvo/kafkamon:$CIRCLE_SHA1 avvo/kafkamon:latest
               docker push avvo/kafkamon:latest
             fi
