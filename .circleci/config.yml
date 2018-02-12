@@ -1,0 +1,88 @@
+---
+version: 2
+jobs:
+  build:
+    working_directory: ~/kafkamon
+
+    docker:
+      - image: avvo/elixir-circleci:1.5.2-1c
+
+    environment:
+      MIX_ENV: test
+      KAFKA_HOSTS: 127.0.0.1:9092
+
+    steps:
+      - checkout
+
+      - restore_cache:
+          key: kafkamon-{{ .Branch }}
+          key: kafkamon-master
+
+      - run: mix do deps.get, deps.compile, compile
+
+      - save_cache:
+          key: kafkamon-{{ .Branch }}
+          key: kafkamon-master
+          paths:
+            - _build
+            - deps
+
+      - run:
+          name: Run Tests
+          command: mix test
+
+      - store_test_results:
+          path: ~/kafkamon/_build/test/lib/
+
+      - restore_cache:
+          keys:
+            - kafkamon-prod-{{ checksum "mix.lock" }}
+            - kafkamon-prod-{{ .Branch }}
+            - kafkamon-prod-master
+
+      - run:
+          name: Compile for prod
+          command: |
+            MIX_ENV=prod mix compile
+
+      - save_cache:
+          key: kafkamon-prod-{{ .Branch }}
+          paths:
+            - _build/prod
+
+      - save_cache:
+          key: kafkamon-prod-{{ checksum "mix.lock" }}
+          paths:
+            - _build/prod
+
+      - run:
+          name: Allow _build to copy for docker building
+          command: sed -i 's/_build//' .dockerignore
+
+      # all steps after this run in the remote environment
+      - type: setup-docker-engine
+        reusable: true
+        version: 17.05.0-ce
+
+      - run:
+          name: Install Docker client
+          command: |
+            set -x
+            VER="17.05.0-ce"
+            curl -L -o /tmp/docker-$VER.tgz https://get.docker.com/builds/Linux/x86_64/docker-$VER.tgz
+            tar -xz -C /tmp -f /tmp/docker-$VER.tgz
+            mv /tmp/docker/* /usr/bin
+
+      - run:
+          name: Build docker image and publish container tagged with branch
+          command: |
+            docker login -u $DOCKER_USER -p $DOCKER_PASS
+            docker build -t avvo/$CIRCLE_PROJECT_REPONAME:$CIRCLE_SHA1 .
+            docker push avvo/$CIRCLE_PROJECT_REPONAME:$CIRCLE_SHA1
+      - run:
+          name: Publish latest if master
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              docker tag avvo/kafkamon:${CIRCLE_BRANCH} avvo/kafkamon:latest
+              docker push avvo/kafkamon:latest
+            fi

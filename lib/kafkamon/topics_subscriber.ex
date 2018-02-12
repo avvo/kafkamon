@@ -1,7 +1,7 @@
 defmodule Kafkamon.TopicsSubscriber do
   use GenServer
 
-  alias Reader.EventQueue.Consumer.Message
+  alias Kafkamon.Reader.EventQueue.Consumer.Message
 
   @stream_wait_time_ms Application.fetch_env!(:kafkamon, :consumer_wait_ms)
 
@@ -16,7 +16,7 @@ defmodule Kafkamon.TopicsSubscriber do
   def start_link, do: GenServer.start_link(__MODULE__, :ok, name: __MODULE__)
 
   def init(:ok) do
-    Reader.TopicBroadcast.subscribe()
+    Kafkamon.Reader.TopicBroadcast.subscribe()
     flush_later(10)
     {:ok, %State{}}
   end
@@ -32,7 +32,7 @@ defmodule Kafkamon.TopicsSubscriber do
   def handle_info({:topics, new_topic_tuples}, %{topics: known_topics} = state) do
     new_topics = new_topic_tuples |> just_names
 
-    Kafkamon.Endpoint.broadcast("topics", "change", %{
+    KafkamonWeb.Endpoint.broadcast("topics", "change", %{
       "previous" => known_topics,
       "now" => new_topics,
     })
@@ -68,7 +68,7 @@ defmodule Kafkamon.TopicsSubscriber do
     end)
     |> Enum.group_by(& Map.get(&1, "topic"))
     |> Enum.each(fn {topic, channel_messages} ->
-      Kafkamon.Endpoint.broadcast("topic:#{topic}",
+      KafkamonWeb.Endpoint.broadcast("topic:#{topic}",
         "new:messages",
         %{"messages" => channel_messages}
       )
@@ -76,13 +76,13 @@ defmodule Kafkamon.TopicsSubscriber do
   end
 
   defp topic_added(topic) do
-    Kafkamon.Endpoint.broadcast("topic:#{topic}", "subscribe", %{})
-    Reader.EventQueue.Broadcast.subscribe(topic)
+    KafkamonWeb.Endpoint.broadcast("topic:#{topic}", "subscribe", %{})
+    Kafkamon.Reader.EventQueue.Broadcast.subscribe(topic)
   end
 
   def topic_removed(topic) do
-    Reader.EventQueue.Broadcast.unsubscribe(topic)
-    Kafkamon.Endpoint.broadcast("topic:#{topic}", "unsubscribe", %{})
+    Kafkamon.Reader.EventQueue.Broadcast.unsubscribe(topic)
+    KafkamonWeb.Endpoint.broadcast("topic:#{topic}", "unsubscribe", %{})
   end
 
   defp just_names(topic_tuples) do

@@ -1,16 +1,14 @@
-FROM avvo/elixir-circleci:1.5.1-1
+FROM avvo/elixir-circleci:1.5.2-1c
 
 ENV MIX_ENV=prod
 
 COPY . .
 
-RUN \
-  curl -sL https://deb.nodesource.com/setup_6.x | bash - \
-  && apt-get update -qq \
-  && apt-get install -y nodejs \
-  && npm install
+WORKDIR assets
 
-RUN ./node_modules/brunch/bin/brunch b -p
+RUN npm install
+
+RUN npm run deploy
 
 WORKDIR /opt/app
 RUN mix phx.digest
@@ -25,13 +23,9 @@ ENV PORT=4000 \
   REPLACE_OS_VARS=true \
   SHELL=/bin/sh
 
-ARG SOURCE_COMMIT=0
-RUN echo $SOURCE_COMMIT
-ENV COMMIT_HASH $SOURCE_COMMIT
-
 WORKDIR /opt/app
 
-COPY --from=0 /opt/app/_build/prod/rel/kafkamon/releases/0.0.2/kafkamon.tar.gz .
+COPY --from=0 /opt/app/_build/prod/rel/kafkamon/releases/0.1.0/kafkamon.tar.gz .
 RUN tar zxf kafkamon.tar.gz
 
 ENTRYPOINT ["/opt/app/bin/kafkamon"]
