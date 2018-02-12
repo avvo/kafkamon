@@ -33,6 +33,7 @@ end
 release :kafkamon do
   set version: current_version(:kafkamon)
   set applications: [
-    kafkamon: :permanent
+    kafkamon: :permanent,
+    mochijson3: :permanent,
   ]
 end
