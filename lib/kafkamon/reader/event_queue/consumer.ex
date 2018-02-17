@@ -80,6 +80,7 @@ defmodule Kafkamon.Reader.EventQueue.Consumer do
   end
 
   defp decode(value) do
+    Logger.error("got value in consumer: #{inspect value}")
     try do
       value |> Avrolixr.Codec.decode
     rescue

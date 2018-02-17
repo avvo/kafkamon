@@ -23,7 +23,7 @@ config :logger,
     :console,
   ]
 
-config :logger, level: :warn
+config :logger, level: :debug
 
 config :kafkamon, KafkamonWeb.Endpoint,
   secret_key_base: "+rQn6NCWQZ7qwTlF8qjN5Np+i79HKqUzmD35chCfIf9QJ00iQ9xjVWzldJVCZucQ"

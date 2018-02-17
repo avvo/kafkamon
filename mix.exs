@@ -25,12 +25,12 @@ defmodule Kafkamon.Mixfile do
 
   defp deps do
     [
-      {:avrolixr, "~> 0.2"},
+      {:avrolixr, "~> 0.3.0"},
       {:cowboy, "~> 1.1"},
       {:erlavro, github: "avvo/erlavro", override: true},
       {:gettext, "~> 0.13"},
-      {:kafka_ex, "~> 0.6"},
-      {:kafka_impl, "~> 0.4"},
+      {:kafka_ex, "~> 0.8.1"},
+      {:kafka_impl, "~> 0.5.0"},
       {:logger_file_backend, "~> 0.0"},
       {:phoenix, "~> 1.3"},
       {:phoenix_html, "~> 2.10"},

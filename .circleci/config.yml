@@ -77,12 +77,12 @@ jobs:
           name: Build docker image and publish container tagged with branch
           command: |
             docker login -u $DOCKER_USER -p $DOCKER_PASS
-            docker build -t avvo/$CIRCLE_PROJECT_REPONAME:$CIRCLE_BRANCH -f Dockerfile --build-arg SOURCE_COMMIT=$(git rev-parse HEAD) .
-            docker push avvo/kafkamon:$CIRCLE_BRANCH
+            docker build -t avvo/$CIRCLE_PROJECT_REPONAME:$CIRCLE_SHA1 .
+            docker push avvo/$CIRCLE_PROJECT_REPONAME:$CIRCLE_SHA1
       - run:
           name: Publish latest if master
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              docker tag avvo/kafkamon:${CIRCLE_BRANCH} avvo/kafkamon:latest
+              docker tag avvo/kafkamon:$CIRCLE_SHA1 avvo/kafkamon:latest
               docker push avvo/kafkamon:latest
             fi

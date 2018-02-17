@@ -23,9 +23,6 @@ ENV PORT=4000 \
   REPLACE_OS_VARS=true \
   SHELL=/bin/sh
 
-ARG SOURCE_COMMIT=0
-ENV COMMIT_HASH $SOURCE_COMMIT
-
 WORKDIR /opt/app
 
 COPY --from=0 /opt/app/_build/prod/rel/kafkamon/releases/0.1.0/kafkamon.tar.gz .
