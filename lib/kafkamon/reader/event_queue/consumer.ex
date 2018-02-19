@@ -79,8 +79,10 @@ defmodule Kafkamon.Reader.EventQueue.Consumer do
     end
   end
 
+  defp decode("{" <> _ = value) do
+    Poison.decode(value)
+  end
   defp decode(value) do
-    Logger.error("got value in consumer: #{inspect value}")
     try do
       value |> Avrolixr.Codec.decode
     rescue
