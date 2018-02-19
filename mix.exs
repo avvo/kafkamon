@@ -43,7 +43,7 @@ defmodule Kafkamon.Mixfile do
       {:junit_formatter, "~> 2.0", only: :test},
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:progress_bar, "~> 1.6", only: [:test, :dev]},
-      {:mix_test_watch, "~> 0.5", only: :dev},
+      {:mix_test_watch, "~> 0.5", only: :dev, runtime: false},
     ]
   end
 end
