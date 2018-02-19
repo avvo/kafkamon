@@ -195,7 +195,7 @@ let Message = CreateReactClass({
     return (
       <div className="messageBlock">
         <Event meta={this.state.meta} event={this.state.event}/>
-        <div className="message"> {JSON.stringify(this.state.message)}</div>
+        <div className="message"><pre>{JSON.stringify(this.state.message, null, 2)}</pre></div>
       </div>
     )
   }
