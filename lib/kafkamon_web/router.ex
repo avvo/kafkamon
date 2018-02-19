@@ -22,9 +22,9 @@ defmodule KafkamonWeb.Router do
   end
 
   scope "/options", KafkamonWeb do
-    get "/options/ping", OptionsController, :ping
-    get "/options/fail", OptionsController, :fail
-    get "/options/deploy_status", OptionsController, :deploy_status
-    get "/options/full_stack_status", OptionsController, :full_stack_status
+    get "/ping", OptionsController, :ping
+    get "/fail", OptionsController, :fail
+    get "/deploy_status", OptionsController, :deploy_status
+    get "/full_stack_status", OptionsController, :full_stack_status
   end
 end
