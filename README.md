@@ -27,6 +27,20 @@ iex --name console@127.0.0.1 --cookie kafkamon --remsh kafkamon@127.0.0.1
 mix kafkamon.test_producer
 ```
 
+### Running kafka locally
+
+You can run a docker kafka container easily with [spotify/docker-kafka](https://github.com/spotify/docker-kafka):
+
+```
+docker run -p 2181:2181 -p 9092:9092 --env ADVERTISED_HOST=`docker-machine ip \`docker-machine active\`` --env ADVERTISED_PORT=9092 spotify/kafka
+```
+
+Then run tests with:
+
+```
+KAKFA_HOSTS=localhost:9092 mix test
+```
+
 ## Releasing
 
 Using **edib** building a docker image is super great! Just run
