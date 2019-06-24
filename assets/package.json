@@ -4,8 +4,8 @@
   "repository": {},
   "license": "MIT",
   "scripts": {
-    "deploy": "webpack --config webpack.prod.js",
     "build-dev": "webpack --config webpack.dev.js",
+    "deploy": "webpack --config webpack.prod.js",
     "watch": "webpack --watch-stdin --progress --color --config webpack.dev.js",
     "watch-phx": "webpack --watch-stdin --color --config webpack.dev.js"
   },
@@ -33,14 +33,14 @@
     "css-loader": "^0.28.11",
     "extract-text-webpack-plugin": "^3.0.2",
     "import-glob-loader": "^1.1.0",
+    "js-yaml": ">=3.13.1",
+    "lodash": ">=4.17.11",
     "node-sass": "^4.12.0",
     "sass-loader": "^6.0.6",
+    "sshpk": ">=1.13.2",
     "style-loader": "^0.19.1",
     "uglifyjs-webpack-plugin": "^1.1.5",
     "webpack": "^3.12.0",
-    "webpack-merge": "^4.1.1",
-    "js-yaml": ">=3.13.1",
-    "sshpk": ">=1.13.2",
-    "lodash": ">=4.17.11"
+    "webpack-merge": "^4.1.1"
   }
 }
