@@ -86,3 +86,10 @@ jobs:
               docker tag avvo/kafkamon:$CIRCLE_SHA1 avvo/kafkamon:latest
               docker push avvo/kafkamon:latest
             fi
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build:
+          context: org-global
