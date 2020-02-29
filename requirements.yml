@@ -12,5 +12,8 @@ routing:
   port: 4000
   protocol: http
   subdomain: kafkamon
+
+cpu_limit: 1000m
+cpu_request: 10m
+memory_limit: 200Mi
 memory_request: 100Mi
-memory_limit: 150Mi
