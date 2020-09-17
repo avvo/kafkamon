@@ -15,14 +15,12 @@ jobs:
       - checkout
 
       - restore_cache:
-          key: kafkamon-{{ .Branch }}
-          key: kafkamon-master
+          key: kafkamon-{{ checksum "mix.lock" }}
 
       - run: mix do deps.get, deps.compile, compile
 
       - save_cache:
-          key: kafkamon-{{ .Branch }}
-          key: kafkamon-master
+          key: kafkamon-{{ checksum "mix.lock" }}
           paths:
             - _build
             - deps
