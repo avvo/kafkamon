@@ -1,12 +1,11 @@
 ---
 service_name: kafkamon
-stack_name: kafkamon
+env_on: start
 image: avvo/kafkamon
 facing: backend
 health_check:
   port: 9292
 routing:
-  lb_port: 8890
   path: /
   port: 9292
   protocol: http
