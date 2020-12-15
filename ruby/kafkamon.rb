@@ -15,23 +15,22 @@ class Kafkamon < Sinatra::Base
     content_type 'text/event-stream'
     stream :keep_open do |out|
       settings.streams << out
+      thread = Thread.new do
+        AvvoKafka.consume(topic: 'directory-attorney-availability', group_id: 'kafkamon-rb') do |message|
+          out << "event: message\n\n"
+          out << "data: #{JSON.generate(message.value).strip}\n\n"
+        rescue => e
+          puts e.message
+        end
+      rescue Kafka::ProcessingError
+        retry
+      end
+
       out.callback do
         puts 'stream closed'
+        thread.exit
         settings.streams.delete(out)
       end
-    end
-  end
-
-  Thread.new do
-    AvvoKafka.consume(topic: 'directory-attorney-availability', group_id: Time.now.to_s) do |message|
-      streams.each do |stream|
-        stream << "event: message\n\n"
-        stream << "data: #{JSON.generate(message.value).strip}\n\n"
-      rescue => e
-        puts e.message
-      end
-    rescue Kafka::ProcessingError
-      retry
     end
   end
 end
