@@ -1,6 +1,29 @@
 ---
 version: 2
 jobs:
+  build-ruby:
+    working_directory: ~/kafkamon
+
+    docker:
+      - image: docker:stable-git
+
+    environment:
+      TZ: "/usr/share/zoneinfo/America/Los_Angeles"
+
+    steps:
+      - checkout
+
+      # all steps after this run in the remote environment
+      - setup_remote_docker:
+          docker_layer_caching: true
+
+      - run: docker login -u $DOCKERHUB_USER -p $DOCKERHUB_PASS
+      - run:
+          command: |
+            cd ruby/
+            docker build -t avvo/$CIRCLE_PROJECT_REPONAME:$CIRCLE_SHA1 --build-arg PACKAGECLOUD_READ_TOKEN=$PACKAGECLOUD_READ_TOKEN .
+            docker push avvo/$CIRCLE_PROJECT_REPONAME:$CIRCLE_SHA1
+
   build:
     working_directory: ~/kafkamon
 
@@ -89,5 +112,5 @@ workflows:
   version: 2
   build:
     jobs:
-      - build:
+      - build-ruby:
           context: org-global

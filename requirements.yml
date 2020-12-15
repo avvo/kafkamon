@@ -4,12 +4,11 @@ stack_name: kafkamon
 image: avvo/kafkamon
 facing: backend
 health_check:
-  port: 4000
-  request_line: GET "/options/full_stack_status" "HTTP/1.0"
+  port: 9292
 routing:
   lb_port: 8890
   path: /
-  port: 4000
+  port: 9292
   protocol: http
   subdomain: kafkamon
   websocket: true
