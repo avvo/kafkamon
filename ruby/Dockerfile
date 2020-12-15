@@ -17,5 +17,7 @@ RUN PACKAGECLOUD_READ_TOKEN=$PACKAGECLOUD_READ_TOKEN \
 
 COPY . ./
 
+RUN apk add --no-cache libstdc++
+
 ENTRYPOINT ["avvoenv", "exec"]
 CMD ["bundle", "exec", "rackup"]
