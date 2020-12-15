@@ -3,13 +3,42 @@
 	<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.3/velocity.min.js"></script>
 	<link href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css" rel="stylesheet">
+	<style>
+	  .pre:nth-last-of-type(odd) {
+	      background: #e0e0e0;
+	  }
+	  .pre:first-child {
+	      background-color: #3273dc;
+	      color: #fff;
+	  }
+	  .pre {
+	      flex: 1;
+	      transition: all 0.3s ease-out;
+	  }
+	  .messages-enter-active {
+	      transition: all 1s;
+	  }
+	  .messages-enter {
+	      flex: 0;
+	  }
+	</style>
     </head>
     <body>
-	<div id="app" class="container is-fullhd">
-	    <transition-group name="messages" v-on:enter="enter" v-on:before-enter="beforeEnter" tag="div">
-		<pre v-for="message in messages" :key="message.updatedAt"><code>{{message}}</code></pre>
-	    </transition-group>
+      <div id="app" class="container is-fullhd">
+	<div v-if="shouldShow">
+	  <div class="is-flex is-align-items-center is-align-content-center is-justify-content-center">
+	    <h3 class="subtitle is-3">directory-attorney-availability</h3>
+	  </div>
+
+	  <transition-group name="messages" v-on:after-enter="afterEnter" tag="div">
+	    <pre class="pre" v-for="message in messages" :key="message.updatedAt"><code>{{message}}</code></pre>
+	  </transition-group>
 	</div>
+	<div v-else class="is-size-1 is-flex is-justify-content-center is-align-self-center is-align-content-center is-align-items-center is-flex-direction-column" style="height: 100%">
+	  <h2 class="title is-2">No New Messages From</h1>
+	  <h1 class="subtitle is-1">directory-attorney-availability</h1>
+	</div>
+      </div>
     </body>
     <script>
      var app = new Vue({
@@ -23,6 +52,9 @@
 		 if (this.messages.length === 0) return [];
 
 		 return Object.keys(this.messages[0]);
+	     },
+	     shouldShow: function() {
+		 return this.messages.length > 0;
 	     }
 	 },
 	 created: function() {
@@ -30,27 +62,6 @@
 	     this.source.onmessage = (event) => {
 		 this.messages.unshift(JSON.parse(event.data));
 	     };
-	 },
-	 methods: {
-	     beforeEnter: function(el) {
-		 el.style.opacity = 0;
-		 el.style.backgroundColor = '#00d1b2'
-	     },
-	     enter: function(el, done) {
-		 let backgroundColor = '#fff';
-		 let color = '#da1039'
-		 if (this.messages.length % 2 === 0) {
-		     backgroundColor = '#3273dc';
-		     color = '#fff';
-		 }
-		 setTimeout(function () {
-		     Velocity(
-			 el,
-			 { opacity: 1, backgroundColor: backgroundColor, color: color },
-			 { complete: done }
-		     );
-		 }, 0.5)
-	     }
 	 }
      });
     </script>

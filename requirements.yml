@@ -10,7 +10,6 @@ routing:
   port: 9292
   protocol: http
   subdomain: kafkamon
-  websocket: true
 
 cpu_limit: 1000m
 cpu_request: 10m

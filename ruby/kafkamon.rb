@@ -33,4 +33,8 @@ class Kafkamon < Sinatra::Base
       end
     end
   end
+
+  get '/options/full_stack_status' do
+    200
+  end
 end
